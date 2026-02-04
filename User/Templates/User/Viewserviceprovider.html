@@ -1,0 +1,196 @@
+{% extends 'User/Userhead.html' %}
+{% block content %}
+{% load static %}
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Service Provider</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2, h3 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .form-row {
+            margin-bottom: 15px;
+        }
+
+        .form-row label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .form-row select, 
+        .form-row input[type="submit"] {
+            width: 100%;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        .form-row input[type="submit"] {
+            background-color: #4a90e2;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .form-row input[type="submit"]:hover {
+            background-color: #357ABD;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px auto;
+            background-color: #fff;
+        }
+
+        table th, table td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+        }
+
+        table th {
+            background-color: #f0f0f0;
+        }
+
+        table img {
+            width: 50px;
+            height: 50px;
+            border-radius: 4px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #fff;
+            background-color: #28a745;
+            padding: 5px 10px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        a:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+<h2>View Service Provider</h2>
+
+<form method="post">
+    {% csrf_token %}
+    <div class="form-row">
+        <label for="sel_district">District</label>
+        <select name="sel_district" id="sel_district">
+            <option value="">--Select District--</option>
+            {% for i in districtdata %}
+            <option value="{{ i.id }}">{{ i.district_name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-row">
+        <label for="sel_place">Place</label>
+        <select name="sel_place" id="sel_place">
+            <option value="">--Select Place--</option>
+        </select>
+    </div>
+
+    <div class="form-row">
+        <label for="sel_service">Service Provider Type</label>
+        <select name="sel_service" id="sel_service">
+            <option value="">Select Service Provider</option>
+            {% for i in servicedata %}
+            <option value="{{ i.id }}">{{ i.serviceprovidertype_name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-row">
+        <input type="submit" value="Submit">
+    </div>
+</form>
+
+{% if accservicedata %}
+<h3>Service Provider List</h3>
+<table>
+    <tr>
+        <th>SL.No</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Contact</th>
+        <th>Photo</th>
+        <th>Place</th>
+        <th>Service Type</th>
+     
+        <th colspan="2">Action</th>
+    </tr>
+
+    {% for i in accservicedata %}
+    <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ i.serviceprovider_name }}</td>
+        <td>{{ i.serviceprovider_email }}</td>
+        <td>{{ i.serviceprovider_contact }}</td>
+        <td><img src="{{ i.serviceprovider_photo.url }}" alt="Photo"></td>
+        <td>{{ i.place.place_name }}</td>
+        <td>{{ i.serviceprovidertype.serviceprovidertype_name }}</td>
+        <td><a href="{% url 'User:Request' i.id %}">Request</a></td>
+        
+        <td><a href="{% url 'User:Viewwork' i.id %}">View Work</a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    $('#sel_district').change(function () {
+        var did = $(this).val();
+        var ur = "{% url 'Guest:Ajaxplace' %}";
+        $.ajax({
+            url: ur,
+            data: { did: did },
+            success: function (data) {
+                $('#sel_place').html(data);
+            }
+        });
+    });
+</script>
+
+{% if msg %}
+<script>
+    alert("{{ msg }}");
+    window.location="{% url 'User:Viewserviceprovider' %}";
+</script>
+{% endif %}
+</body>
+</html>
+{% endblock content %}

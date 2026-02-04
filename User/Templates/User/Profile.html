@@ -1,0 +1,128 @@
+{% extends 'User/Userhead.html' %}
+{% block content %}
+{% load static %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        .profile-container {
+            max-width: 400px;
+            margin: 50px auto;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-header h1 {
+            margin: 10px 0;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .profile-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #4a90e2;
+        }
+
+        .profile-info {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .profile-info td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .profile-info td:first-child {
+            font-weight: bold;
+            color: #555;
+            width: 35%;
+        }
+
+        .profile-info td:last-child {
+            color: #333;
+        }
+
+        .profile-actions {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .profile-actions a {
+            text-decoration: none;
+            color: #fff;
+            background-color: #4a90e2;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin: 0 5px;
+            transition: background 0.3s;
+        }
+
+        .profile-actions a:hover {
+            background-color: #357ABD;
+        }
+    </style>
+</head>
+<body>
+
+<div class="profile-container">
+    <div class="profile-header">
+        <img src="{{ userdata.newuser_photo.url }}" alt="Profile Image" class="profile-image">
+        <h1>{{ userdata.newuser_name }}</h1>
+    </div>
+
+    <table class="profile-info">
+        <tr>
+            <td>Email</td>
+            <td>{{ userdata.newuser_email }}</td>
+        </tr>
+        <tr>
+            <td>Contact</td>
+            <td>{{ userdata.newuser_contact }}</td>
+        </tr>
+        <tr>
+            <td>Address</td>
+            <td>{{ userdata.newuser_address }}</td>
+        </tr>
+        <tr>
+            <td>District</td>
+            <td>{{ userdata.newuser_place.district.district_name }}</td>
+        </tr>
+        <tr>
+            <td>Place</td>
+            <td>{{ userdata.newuser_place.place_name }}</td>
+        </tr>
+    </table>
+
+    <div class="profile-actions">
+        <a href="{% url 'User:EditProfile' %}">Edit Profile</a>
+        <a href="{% url 'User:ChangePassword' %}">Change Password</a>
+    </div>
+</div>
+
+</body>
+</html>
+{% endblock content %}
+

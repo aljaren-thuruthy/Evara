@@ -1,0 +1,201 @@
+{% extends 'User/Userhead.html' %} 
+{% block content %}
+{% load static %}
+
+<style>
+/* Body neutral so footer stays outside green */
+body {
+    background: #f8f9fa; /* light neutral */
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Container for content */
+.container {
+    max-width: 1100px;
+    margin: 50px auto;
+    padding: 20px;
+    background: #d4edda; /* light green */
+    border-radius: 12px;
+}
+
+/* Heading */
+h2 {
+    text-align: center;
+    margin-bottom: 35px;
+    color: #2c3e50;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* Card / Table wrapper */
+.card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    overflow-x: auto;
+    padding: 0;
+}
+
+/* Table styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+thead tr {
+    /* Header neutral, no background color */
+    color: #333;
+    font-weight: 600;
+}
+
+th, td {
+    padding: 12px 14px;
+    text-align: center;
+}
+
+td.details {
+    text-align: left;
+    color: #555;
+}
+
+tr {
+    border-bottom: 1px solid #eee;
+    transition: background 0.2s ease;
+}
+
+tr:hover {
+    background: #e2f0e5; /* subtle green hover */
+}
+
+/* Badges */
+.badge {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.badge.verified {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.badge.started {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.badge.completed {
+    background: #d4edda;
+    color: #155724;
+}
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    padding: 7px 14px;
+    border-radius: 20px;
+    font-weight: 600;
+    text-decoration: none;
+    color: #fff;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    transition: all 0.2s ease;
+}
+
+.btn.pay {
+    background: linear-gradient(90deg, #4a90e2, #357abd);
+}
+
+.btn.pay:hover {
+    opacity: 0.9;
+}
+
+/* Links */
+a.complaint {
+    color: #e74c3c;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+a.complaint:hover {
+    text-decoration: underline;
+}
+
+/* No data row */
+.no-data {
+    padding: 25px;
+    text-align: center;
+    color: #888;
+    font-size: 15px;
+}
+</style>
+
+<div class="container">
+
+    <h2>My Requests</h2>
+
+    <div class="card">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>S.No</th>
+                    <th>To Date</th>
+                    <th>Details</th>
+                    <th>Service</th>
+                    <th>Service Provider</th>
+                    <th>Work Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for i in requestdata %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ i.request_todate }}</td>
+                    <td class="details">{{ i.request_details }}</td>
+                    <td>{{ i.service.service_name }}</td>
+                    <td>{{ i.serviceprovider.serviceprovider_name }}</td>
+                    <td>
+                        {% if i.request_status == 1 %}
+                            <span class="badge verified">Verified</span>
+                        {% elif i.request_status == 3 %}
+                            <span class="badge started">Work Started</span>
+                        {% elif i.request_status == 4 or i.request_status == 5 %}
+                            <span class="badge completed">Work Completed</span>
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if i.request_status == 4 %}
+                            <a href="{% url 'User:Paymentview' i.id %}" class="btn pay">Pay Now</a>
+                        {% elif i.request_status == 5 %}
+                            <div style="margin-bottom: 6px;">
+                                <span style="color: #28a745; font-weight: 700;">Payment Completed</span>
+                            </div>
+                            <a href="{% url 'User:SComplaint' i.serviceprovider.id %}" class="complaint">Raise Complaint</a>
+                            <br>
+                            <a href="{% url 'User:rating' i.serviceprovider.id %}" class="complaint">Rating</a>
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="no-data">No requests found</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock content %}

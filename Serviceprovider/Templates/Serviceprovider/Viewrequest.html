@@ -1,0 +1,282 @@
+{% extends 'Serviceprovider/shead.html' %}
+{% block content %}
+{% load static %}
+
+<style>
+/* Container */
+body {
+    background: #d4edda; /* Light green background */
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+.container {
+    max-width: 1200px;
+    margin: 40px auto;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Card styling */
+.card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+    margin-bottom: 40px;
+    overflow: hidden;
+}
+
+.card-header {
+    padding: 15px 20px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.card-header.pending { background: #4a90e2; }
+.card-header.verified { background: #28a745; }
+.card-header.rejected { background: #dc3545; }
+
+.card-body {
+    padding: 20px;
+    overflow-x: auto;
+}
+
+/* Table styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background: #f0f0f0;
+}
+
+th, td {
+    padding: 12px 10px;
+    text-align: center;
+    border: 1px solid #ddd;
+    font-size: 14px;
+}
+
+tr:nth-child(even) {
+    background: #f9f9f9;
+}
+
+/* Badges */
+.badge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 12px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.badge.info { background: #17a2b8; }
+.badge.success { background: #28a745; }
+.badge.warning { background: #ffc107; color: #000; }
+.badge.danger { background: #dc3545; }
+.badge.secondary { background: #6c757d; }
+
+/* Buttons */
+.btn {
+    padding: 5px 12px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    text-decoration: none;
+    color: #fff;
+    transition: all 0.2s ease;
+}
+
+.btn-success { background: #28a745; }
+.btn-danger { background: #dc3545; }
+.btn-warning { background: #ffc107; color: #000; }
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+/* Form input */
+input[type="number"] {
+    padding: 5px 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    width: 100px;
+    text-align: center;
+}
+
+form .submit-btn {
+    padding: 5px 12px;
+    border-radius: 8px;
+    border: none;
+    background: #007bff;
+    color: #fff;
+    cursor: pointer;
+}
+
+form .submit-btn:hover {
+    background: #0056b3;
+}
+</style>
+
+<div class="container">
+
+    <!-- Pending Requests -->
+    <div class="card">
+        <div class="card-header pending">Pending Requests</div>
+        <div class="card-body">
+            <table>
+                <thead>
+                    <tr>
+                        <th>SL.No</th>
+                        <th>To Date</th>
+                        <th>Details</th>
+                        <th>Service</th>
+                        <th>User</th>
+                        <th>Email</th>
+                        <th>Contact</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for i in requestdata %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ i.request_todate }}</td>
+                        <td>{{ i.request_details }}</td>
+                        <td>{{ i.service.service_name }}</td>
+                        <td>{{ i.user.newuser_name }}</td>
+                        <td>{{ i.user.newuser_email }}</td>
+                        <td>{{ i.user.newuser_contact }}</td>
+                        <td>
+                            {% if i.request_status == 0 %}
+                                <a href="{% url 'Serviceprovider:accrequest' i.id %}" class="btn btn-success">Accept</a>
+                                <a href="{% url 'Serviceprovider:rejrequest' i.id %}" class="btn btn-danger">Reject</a>
+                            {% elif i.request_status == 1 %}
+                                <span class="badge info">Verified</span>
+                            {% elif i.request_status == 2 %}
+                                <span class="badge danger">Rejected</span>
+                            {% elif i.request_status == 3 %}
+                                <span class="badge warning">Work Started</span>
+                            {% elif i.request_status == 4 %}
+                                <span class="badge secondary">Work Ended / Payment Pending</span>
+                            {% elif i.request_status == 5 %}
+                                <span class="badge success">Paid ₹{{ i.request_amount }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="8" style="color: #888;">No pending requests</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Verified Requests -->
+    <div class="card">
+        <div class="card-header verified">Verified Requests</div>
+        <div class="card-body">
+            <table>
+                <thead>
+                    <tr>
+                        <th>SL.No</th>
+                        <th>To Date</th>
+                        <th>Details</th>
+                        <th>Service</th>
+                        <th>User</th>
+                        <th>Email</th>
+                        <th>Contact</th>
+                        <th>Work Status</th>
+                        <th>Work End / Payment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for i in accreqdata %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ i.request_todate }}</td>
+                        <td>{{ i.request_details }}</td>
+                        <td>{{ i.service.service_name }}</td>
+                        <td>{{ i.user.newuser_name }}</td>
+                        <td>{{ i.user.newuser_email }}</td>
+                        <td>{{ i.user.newuser_contact }}</td>
+                        <td>
+                            {% if i.request_status == 1 %}
+                                <a href="{% url 'Serviceprovider:workstart' i.id %}" class="btn btn-warning">Start</a>
+                            {% elif i.request_status == 3 %}
+                                <a href="{% url 'Serviceprovider:workend' i.id %}" class="btn btn-warning">End</a>
+                            {% elif i.request_status >= 4 %}
+                                <span class="badge secondary">Completed</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if i.request_status == 4 and not i.request_amount %}
+                                <form method="post" action="{% url 'Serviceprovider:set_amount' i.id %}">
+                                    {% csrf_token %}
+                                    <input type="number" name="txt_amount" placeholder="Enter Amount" required>
+                                    <button type="submit" class="submit-btn">Submit</button>
+                                </form>
+                            {% elif i.request_status == 4 and i.request_amount %}
+                                <span class="badge warning">Payment Pending ₹{{ i.request_amount }}</span>
+                            {% elif i.request_status == 5 %}
+                                <span class="badge success">Payment Completed ₹{{ i.request_amount }}</span>
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="9" style="color: #888;">No verified requests</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Rejected Requests -->
+    <div class="card">
+        <div class="card-header rejected">Rejected Requests</div>
+        <div class="card-body">
+            <table>
+                <thead>
+                    <tr>
+                        <th>SL.No</th>
+                        <th>To Date</th>
+                        <th>Details</th>
+                        <th>Service</th>
+                        <th>User</th>
+                        <th>Email</th>
+                        <th>Contact</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for i in rejreqdata %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ i.request_todate }}</td>
+                        <td>{{ i.request_details }}</td>
+                        <td>{{ i.service.service_name }}</td>
+                        <td>{{ i.user.newuser_name }}</td>
+                        <td>{{ i.user.newuser_email }}</td>
+                        <td>{{ i.user.newuser_contact }}</td>
+                        <td><span class="badge danger">Rejected</span></td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="8" style="color: #888;">No rejected requests</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+{% endblock content %}

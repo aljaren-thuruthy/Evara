@@ -1,0 +1,58 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+    <head> 
+        <meta charset="UTF-8"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+        <title>Seller Profile</title> 
+    </head> 
+    <body> 
+        <form action="" method="post"> 
+            {% csrf_token %} 
+            <table border="1"> 
+                <tr> 
+                    <td>Name</td> 
+                    <td>{{Data.seller_name}}</td> 
+                </tr> 
+                <tr> 
+                    <td>Email</td> 
+                    <td>{{Data.seller_email}}</td> 
+                </tr> 
+                <tr> 
+                    <td>Contact</td> 
+                    <td>{{Data.seller_contact}}</td> 
+                </tr> 
+                <tr> 
+                    <td>Establish Date</td> 
+                    <td>{{Data.seller_establishdate}}</td> 
+                </tr> 
+                <td>License No</td> 
+                <td>{{Data.seller_licenseno}}</td> 
+            </tr> 
+            <td>Owner Name</td> 
+            <td>{{Data.seller_ownername}}</td> 
+        </tr> 
+        <tr> 
+            <td colspan="2" align="center"> 
+                <img src="{{Data.seller_licenseproof.url}}" alt="License Proof" width="150" height="150"> </td> 
+        </tr> 
+        <tr> 
+            <td colspan="2" align="center"> <img src="{{Data.seller_ownerproof.url}}" alt="Owner Proof" width="150" height="150"> </td> 
+        </tr> 
+        <tr> 
+            <td>District</td> 
+            <td>{{Data.place.district.district_name}}</td> 
+        </tr> 
+        <tr> 
+            <td>Place</td> 
+            <td>{{Data.place.place_name}}</td> 
+        </tr> 
+        <tr> 
+            <td colspan="2" align="center"> 
+                <a href="{% url 'Seller:SellerEditProfile' %}">Edit Profile</a> | 
+                <a href="{% url 'Seller:SellerChangePassword' %}">Change Password</a> 
+            </td> 
+        </tr> 
+    </table> 
+</form> 
+</body> 
+</html>

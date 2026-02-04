@@ -1,0 +1,168 @@
+{% extends 'Admin/adminhead.html' %}
+{% load static %}
+
+{% block content %}
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Provider Type</title>
+
+    <style>
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: #f4f6f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 40px auto;
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+        }
+
+        table th, table td {
+            padding: 12px;
+            text-align: center;
+        }
+
+        table th {
+            background-color: #0d6efd;
+            color: white;
+            font-weight: 600;
+        }
+
+        table td {
+            border-bottom: 1px solid #ddd;
+        }
+
+        .form-table td {
+            text-align: left;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            outline: none;
+            font-size: 14px;
+        }
+
+        input[type="text"]:focus {
+            border-color: #0d6efd;
+        }
+
+        .btn {
+            background: #0d6efd;
+            color: white;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .btn:hover {
+            background: #0b5ed7;
+        }
+
+        .delete-link {
+            color: #dc3545;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .delete-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 20px;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>Service Provider Type</h2>
+
+    <form action="" method="post">
+        {% csrf_token %}
+
+        <!-- Form Table -->
+        <table class="form-table">
+            <tr>
+                <td><strong>Service Provider Type</strong></td>
+                <td>
+                    <input type="text" name="txt_servicetype" required>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align:center;">
+                    <input type="submit" value="Submit" class="btn">
+                </td>
+            </tr>
+        </table>
+
+        <!-- List Table -->
+        <table>
+            <tr>
+                <th>SNO</th>
+                <th>Service Type</th>
+                <th>Action</th>
+            </tr>
+
+            {% for i in servicedata %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ i.serviceprovidertype_name }}</td>
+                <td>
+                    <a href="{% url 'Admin:delservice' i.id %}" class="delete-link">
+                        Delete
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3">No Service Types Found</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </form>
+</div>
+
+{% if msg %}
+<script>
+    alert("{{ msg }}");
+    window.location = "{% url 'Admin:Serviceprovidertype' %}";
+</script>
+{% endif %}
+
+</body>
+</html>
+{% endblock content %}

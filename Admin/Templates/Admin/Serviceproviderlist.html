@@ -1,0 +1,205 @@
+{% extends 'Admin/adminhead.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        color: #333;
+    }
+
+    h3 {
+        color: #2c3e50;
+        margin-bottom: 5px;
+        border-bottom: 1px solid #3498db;
+        padding-bottom: 3px;
+        font-size: 1rem;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+        background-color: #fff;
+        font-size: 0.85rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    table th,
+    table td {
+        padding: 5px 8px;
+        text-align: left;
+        border: 1px solid #ddd;
+    }
+
+    table th {
+        background-color: #3498db;
+        color: #fff;
+        font-weight: 600;
+    }
+
+    table tr:hover {
+        background-color: #f1faff;
+    }
+
+    a {
+        text-decoration: none;
+        padding: 3px 6px;
+        border-radius: 3px;
+        font-size: 0.75rem;
+        transition: 0.3s;
+    }
+
+    a[href*="accept"] {
+        background-color: #2ecc71;
+        color: white;
+    }
+
+    a[href*="accept"]:hover {
+        background-color: #27ae60;
+    }
+
+    a[href*="reject"] {
+        background-color: #e74c3c;
+        color: white;
+    }
+
+    a[href*="reject"]:hover {
+        background-color: #c0392b;
+    }
+
+    img {
+        border-radius: 3px;
+        object-fit: cover;
+        width: 40px;
+        height: 40px;
+    }
+
+    form {
+        max-width: 1000px;
+        margin: auto;
+    }
+</style>
+
+<form action="" method="post">
+    {% csrf_token %}
+
+    <h3>Service Provider List</h3>
+    <table>
+        <tr>
+            <th>SL.No</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Contact</th>
+            <th>Address</th>
+            <th>Photo</th>
+            <th>Id proof</th>
+            <th>Place</th>
+            <th>Service Type</th>
+            <th colspan="2">Action</th>
+        </tr>
+        {% for i in providerdata %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ i.serviceprovider_name }}</td>
+            <td>{{ i.serviceprovider_email }}</td>
+            <td>{{ i.serviceprovider_contact }}</td>
+            <td>{{ i.serviceprovider_address }}</td>
+            <td><img src="{{ i.serviceprovider_photo.url }}"></td>
+            <td><img src="{{ i.serviceprovider_idproof.url }}"></td>
+            <td>{{ i.place.place_name }}</td>
+            <td>{{ i.serviceprovidertype.serviceprovidertype_name }}</td>
+            <td><a href="{% url 'Admin:acceptserviceprovider' i.id %}">Accept</a></td>
+            <td><a href="{% url 'Admin:rejectserviceprovider' i.id %}">Reject</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h3>Verified Service Provider List</h3>
+    <table>
+        <tr>
+            <th>SL.No</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Contact</th>
+            <th>Complaints</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+        {% for i in accservicedata %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ i.serviceprovider_name }}</td>
+            <td>{{ i.serviceprovider_email }}</td>
+            <td>{{ i.serviceprovider_contact }}</td>
+            <td>{{ i.complaint_count }}</td>
+            <td>
+                {% if i.complaint_count > 5 %}
+                <span style="color:red;">Too many complaints</span>
+                {% else %}
+                Active
+                {% endif %}
+            </td>
+            <td>
+                {% if i.complaint_count >= 5 %}
+                <a href="{% url 'Admin:rejectserviceprovider' i.id %}" style="background-color:black;color:white;">Block</a>
+                {% else %}—{% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h3>Rejected Service Provider</h3>
+    <table>
+        <tr>
+            <th>SL.No</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Contact</th>
+            <th>Address</th>
+            <th>Photo</th>
+            <th>Id proof</th>
+            <th>Place</th>
+            <th>Service Type</th>
+            <th colspan="2">Action</th>
+        </tr>
+        {% for i in rejservicedata %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ i.serviceprovider_name }}</td>
+            <td>{{ i.serviceprovider_email }}</td>
+            <td>{{ i.serviceprovider_contact }}</td>
+            <td>{{ i.serviceprovider_address }}</td>
+            <td><img src="{{ i.serviceprovider_photo.url }}"></td>
+            <td><img src="{{ i.serviceprovider_idproof.url }}"></td>
+            <td>{{ i.place.place_name }}</td>
+            <td>{{ i.serviceprovidertype.serviceprovidertype_name }}</td>
+            <td>
+                {% if i.serviceprovider_status == 0 %}
+                <a href="{% url 'Admin:acceptprovider' i.id %}">Accept</a>
+                {% elif i.serviceprovider_status == 1 %}
+                Verified
+                {% endif %}
+            </td>
+            <td>
+                {% if i.serviceprovider_status == 0 %}
+                <a href="{% url 'Admin:rejectprovider' i.id %}">Reject</a>
+                {% elif i.serviceprovider_status == 2 %}
+                Rejected
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</form>
+
+{% if msg %}
+<script>
+    alert("{{ msg }}");
+    window.location = "{% url 'Admin:Serviceproviderlist' %}";
+</script>
+{% endif %}
+
+{% endblock content %}

@@ -1,0 +1,57 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+    <head> 
+        <meta charset="UTF-8"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+        <title>Edit Profile</title> 
+    </head> 
+    <body> 
+        <form action="" method="post"> 
+            {% csrf_token %} 
+            <table border="1"> 
+                <tr> 
+                    <td>Name</td> 
+                    <td><input type="text" name="txt_name" value="{{Data.seller_name}}" id=""></td> 
+                </tr> 
+                <tr> 
+                    <td>Email</td> 
+                    <td><input type="text" name="txt_email" value="{{Data.seller_email}}" id=""></td> 
+                </tr> 
+                <tr> 
+                    <td>Contact</td> 
+                    <td><input type="text" name="txt_contact" value="{{Data.seller_contact}}" id=""></td> 
+                </tr> 
+                <tr> 
+                    <td>Establish Date</td> 
+                    <td><input type="date" name="txt_estdate" value="{{Data.seller_establishdate|date:'Y-m-d'}}" id=""></td> 
+                </tr> 
+                <tr> 
+                    <td>License No</td> 
+                    <td><input type="text" name="txt_licenseno" value="{{Data.seller_licenseno}}" id=""></td> 
+                </tr> 
+                <tr> 
+                    <td>Owner Name</td> 
+                    <td><input type="text" name="txt_ownername" value="{{Data.seller_ownername}}" id=""></td> 
+                </tr> 
+                <!-- <tr> 
+                    <td>License Proof</td> 
+                    <td><input type="file" name="txt_licenseproof" value="{{Data.seller_licenseproof.url}}" id=""></td> 
+                </tr> 
+                <tr> 
+                    <td>Owner Proof</td> 
+                    <td><input type="file" name="txt_ownerproof" value="{{Data.seller_ownerproof.url}}"id=""></td> 
+                </tr> 
+                <tr> -->
+                    <td colspan="2" align="center"> 
+                        <input type="submit" value="Update"> 
+                    </td> 
+                </tr>  
+            </table> 
+        </form> 
+    </body> 
+    </html> 
+    {% if msg %} 
+    <script>alert("{{msg}}") 
+    window.location="{% url 'Seller:SellerProfile' %}" 
+    </script> 
+    {% endif %}

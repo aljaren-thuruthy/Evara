@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee</title>
+</head>
+<body>
+    <form action="" method="post">
+         {% csrf_token %}
+        <table border="1">
+            <tr>
+                <td>Employee Name</td>
+                <td><input type="text" name="txt_name" value="{{ editdata.employee_name }}" id=""></td>
+            </tr>
+            <tr>
+                <td>Gender</td>
+                <td>
+                    <input type="radio" name="txt_gender" value="Male" id="" {% if editdata.employee_gender == "Male" %}checked{% endif %}>Male
+                    <input type="radio" name="txt_gender" value="Female" id="" {% if editdata.employee_gender == "Female" %}checked{% endif %}>Female
+                    <input type="radio" name="txt_gender" value="Others" id="" {% if editdata.employee_gender == "Others" %}checked{% endif %}>Others
+                </td>
+            </tr>
+            <tr>
+                <td>Contact</td>
+                <td><input type="text" name="txt_contact" value="{{ editdata.employee_contact }}" id=""></td>
+            </tr>
+            <tr>
+                <td>Date Of Joining</td>
+                <td><input type="date" name="txt_doj" value="{{ editdata.employee_doj|date:'Y-m-d' }}" id=""></td>
+            </tr>
+            <tr>
+                <td>Department</td>
+                <td><select name="sel_department">
+                    <option value="">--Select Department--</option>
+                     {% for i in departmentdata %}
+                     <option 
+                        {% if i.id == editdata.department.id %} Selected {% endif %} value="{{i.id}}">{{i.dept_name}}
+                    </option>
+                     {% endfor %}
+                </select></td>
+            </tr>
+             <tr>
+                <td>Designation</td>
+                <td><select name="sel_designation">
+                    <option value="">--Select Designation--</option>
+                     {% for i in designationdata %}
+                     <option 
+                        {% if i.id == editdata.designation.id %} Selected {% endif %} value="{{i.id}}">{{i.designation_name}}
+                    </option>
+                     {% endfor %}
+                </select></td>
+            </tr>
+            <tr>
+                <td>Salary</td>
+                <td><input type="number" name="txt_salary" value="{{ editdata.employee_salary }}" id=""></td>
+            </tr>
+            <!-- <tr>
+                <td>Place</td>
+                <td><input type="text" name="txt_place" value="{{editdata.place_name}}" id=""></td>
+            </tr> -->
+            <tr>
+                <td colspan="2" align="center">
+                    <input type="submit" value="submit">
+                    <a href="{% url 'Admin:Employee' %}">
+                   <input type="button" value="Cancel"></a>
+                </td>
+            </tr>
+        </table>
+        <table border="2">
+            <tr>
+                <td>Sl.No</td>
+                <td>Name</td>
+                <td>Gender</td>
+                <td>Contact</td>
+                <td>Date Of Joining</td>
+                <td>Department</td>
+                <td>Designation</td>
+                <td>Salary</td>
+                <td colspan="2">Action</td>
+            </tr>
+             {% for i in employeedata %}
+            <tr>
+                <td>{{forloop.counter}}</td>
+                <td>{{i.employee_name}}</td>
+                <td>{{i.employee_gender}}</td>
+                <td>{{i.employee_contact}}</td>
+                <td>{{i.employee_doj}}</td> 
+                <td>{{i.department.dept_name}}</td>
+                <td>{{i.designation.designation_name}}</td>
+                <td>{{i.employee_salary}}</td>
+                <td><a href="{% url 'Admin:deleteemployee' i.id %}">delete</a></td>
+                <td><a href="{% url 'Admin:editemployee' i.id %}">edit</td>
+            </tr>
+             {% endfor %}
+        </table>
+    </form>
+</body>
+</html>
+{% if msg %}
+<script>alert("{{msg}}")
+    window.location="{% url 'Admin:Employee' %}"
+</script>
+{% endif %}

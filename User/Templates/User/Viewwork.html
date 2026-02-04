@@ -1,0 +1,111 @@
+{% extends 'User/Userhead.html' %}
+{% block content %}
+{% load static %}
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work Gallery</title>
+
+    <style>
+        body {
+            font-family: "Segoe UI", sans-serif;
+            background: #f2f4f8;
+            margin: 0;
+            padding: 30px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .gallery-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .gallery-card {
+            background: #fff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-card:hover {
+            transform: translateY(-6px);
+        }
+
+        .gallery-card img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+        }
+
+        .gallery-content {
+            padding: 18px;
+        }
+
+        .gallery-content h4 {
+            margin: 0 0 10px;
+            color: #111;
+            font-size: 18px;
+        }
+
+        .gallery-content p {
+            margin: 0;
+            color: #555;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .empty-msg {
+            text-align: center;
+            color: #777;
+            font-size: 16px;
+        }
+
+        @media (max-width: 600px) {
+            .gallery-card img {
+                height: 220px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<h2>Work Gallery</h2>
+
+<div class="gallery-container">
+
+    {% for i in gallerydata %}
+    <div class="gallery-card">
+        <img src="{{ i.work_photo.url }}" alt="Work Image">
+
+        <div class="gallery-content">
+            <h4>Work {{ forloop.counter }}</h4>
+            <p>{{ i.work_description }}</p>
+        </div>
+    </div>
+    {% empty %}
+        <p class="empty-msg">No works uploaded</p>
+    {% endfor %}
+
+</div>
+
+</body>
+</html>
+
+
+{% endblock content %}

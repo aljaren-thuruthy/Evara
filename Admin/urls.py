@@ -1,0 +1,48 @@
+from django.urls import path
+from Admin import views
+app_name="Admin"
+
+urlpatterns = [
+ path('District/',views.District,name="District"),
+ path('Category/',views.Category,name="Category"),
+ path('AdminRegistration/',views.AdminRegistration,name="AdminRegistration"),
+ path('Deldistrict/<int:did>',views.deldistrict,name="deldistrict"),
+ path('Delcategory/<int:cid>',views.delcategory,name="delcategory"),
+ path('Deladminreg/<int:aid>',views.deladminreg,name="deladminreg"),
+ path('Editdistrict/<int:did>',views.editdistrict,name="editdistrict"),
+ path('Editcategory/<int:cid>',views.editcategory,name="editcategory"),
+ path('Editadmin/<int:aid>',views.editadmin,name="editadmin"),
+ path('Place/',views.Place,name="Place"),
+ path('Editplace/<int:pid>',views.editplace,name="editplace"),
+ path('Department/',views.Department,name="Department"),
+ path('Deldept/<int:did>',views.deldept,name="deldept"),
+ path('Editdept/<int:did>',views.editdept,name="editdept"),
+ path('Designation/',views.designation,name="Designation"),
+ path('Deldesi/<int:did>',views.deldesi,name="deldesi"),
+ path('Editdesi/<int:did>',views.editdesi,name="editdesi"),
+ path('Employee/',views.Employee ,name="Employee"),
+ path('editdemployee/<int:empid>',views.editemployee,name="editemployee"),
+ path('deleteemployee/<int:empid>',views.deleteemployee,name="deleteemployee"),
+ path('UserList/',views.UserList,name="UserList"),
+ path('SellerList/',views.SellerList,name="SellerList"),
+ path('acceptseller/<int:sid>',views.acceptseller,name="acceptseller"),
+ path('rejectseller/<int:sid>',views.rejectseller,name="rejectseller"),
+ path('acceptuser/<int:uid>',views.acceptuser,name="acceptuser"),
+ path('rejectuser/<int:uid>',views.rejectuser,name="rejectuser"),
+ path('Homepage/',views.Homepage,name="Homepage"),
+ path('ViewComplaint/',views.ViewComplaint,name="ViewComplaint"),
+ path('Reply/<int:cid>',views.Reply,name="Reply"),
+
+ path('Serviceprovidertype/',views.Serviceprovidertype,name="Serviceprovidertype"), 
+ path('delservice/<int:sid>',views.delservice,name="delservice"),
+ path('Serviceproviderlist/',views.Serviceproviderlist,name="Serviceproviderlist"),
+ path('acceptserviceprovider/<int:sid>',views.acceptserviceprovider,name="acceptserviceprovider"),
+ path('rejectserviceprovider/<int:sid>',views.rejectserviceprovider,name="rejectserviceprovider"),
+ path('Service/',views.Service,name="Service"),
+ path('delservicetype/<int:stid>',views.delservicetype,name="delservicetype"),
+ path('Logout/', views.Logout, name="Logout"),
+ path('Complaintview/',views.Complaintview,name="Complaintview"),
+ path('complaints/reply/<int:complaint_id>/', views.AddReply, name="AddReply"),
+ path('Profit/', views.Profit, name="Profit"),
+
+]

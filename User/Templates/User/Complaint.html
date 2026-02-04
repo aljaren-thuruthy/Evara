@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complaint</title>
+
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f6f9;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th, table td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        table th {
+            background: #2c3e50;
+            color: #fff;
+        }
+
+        table tr:nth-child(even) {
+            background: #f2f2f2;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: none;
+        }
+
+        .btn {
+            background: #3498db;
+            color: #fff;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+        }
+
+        .delete {
+            color: #e74c3c;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .delete:hover {
+            text-decoration: underline;
+        }
+
+        .status-pending {
+            color: #e67e22;
+            font-weight: bold;
+        }
+
+        .status-replied {
+            color: #27ae60;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <h2>Complaint Registration</h2>
+
+    <div class="card">
+        <form action="" method="post">
+            {% csrf_token %}
+            <table>
+                <tr>
+                    <td><strong>Title</strong></td>
+                    <td><input type="text" name="txt_title" required></td>
+                </tr>
+                <tr>
+                    <td><strong>Content</strong></td>
+                    <td><textarea name="txt_content" rows="4" required></textarea></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align:center">
+                        <input type="submit" value="Submit Complaint" class="btn">
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+    <div class="card">
+        <h2>My Complaints</h2>
+        <table>
+            <tr>
+                <th>S.No</th>
+                <th>Title</th>
+                <th>Content</th>
+                <th>Date</th>
+                <th>Reply</th>
+                <th>Action</th>
+            </tr>
+
+            {% for i in complaintdata %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ i.complaint_title }}</td>
+                <td>{{ i.complaint_content }}</td>
+                <td>{{ i.complaint_date }}</td>
+                <td>
+                    {% if i.complaint_status == 1 %}
+                        <span class="status-replied">{{ i.complaint_reply }}</span>
+                    {% else %}
+                        <span class="status-pending">Not Replied</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'User:delcomplaint' i.id %}" class="delete">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+</div>
+
+{% if msg %}
+<script>
+    alert("{{msg}}");
+    window.location="{% url 'User:Complaint' %}";
+</script>
+{% endif %}
+
+</body>
+</html>

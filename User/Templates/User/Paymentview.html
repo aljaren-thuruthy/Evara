@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Payment</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #4a90e2, #6aa8ff);
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .payment-card {
+            background: #ffffff;
+            width: 400px;
+            padding: 30px 25px;
+            border-radius: 14px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .payment-card h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            font-size: 26px;
+        }
+
+        .amount-box {
+            margin-bottom: 25px;
+            padding: 16px;
+            background: #f4f8ff;
+            border-radius: 10px;
+            font-size: 22px;
+            font-weight: 700;
+            color: #2d6cdf;
+            text-align: center;
+        }
+
+        .amount-box span {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #7a8aa0;
+            margin-bottom: 6px;
+            letter-spacing: 1px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 12px;
+        }
+
+        .pay-btn {
+            width: 100%;
+            margin-top: 20px;
+            padding: 12px;
+            border: none;
+            border-radius: 25px;
+            background: linear-gradient(90deg, #4a90e2, #357abd);
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+        }
+
+        .pay-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 22px rgba(0,0,0,0.25);
+        }
+
+        .note {
+            margin-top: 15px;
+            font-size: 12px;
+            color: #777;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+
+
+
+    <div class="payment-card">
+    <h1>Card Payment</h1>
+
+   
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="amount-box">
+            <span>AMOUNT TO PAY</span>
+            ₹ {{ requestdata.request_amount }}
+        </div>
+
+        <div class="form-group">
+            <label>Card Number</label>
+            <input type="text" maxlength="16" placeholder="1234 5678 9012 3456" required>
+        </div>
+
+        <div class="form-group">
+            <label>Card Holder Name</label>
+            <input type="text" placeholder="Name on card" required>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group" style="flex:1;">
+                <label>Expiry Date</label>
+                <input type="text" placeholder="MM/YY" required>
+            </div>
+
+            <div class="form-group" style="flex:1;">
+                <label>CVV</label>
+                <input type="password" maxlength="3" placeholder="***" required>
+            </div>
+        </div>
+
+        <button type="submit" class="pay-btn">
+            Pay Now
+        </button>
+    </form>
+
+    <div class="note">
+        🔒 Secure payment • Card details are encrypted
+    </div>
+</div>
+
+
+</body>
+
+</html>

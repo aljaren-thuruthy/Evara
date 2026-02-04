@@ -1,0 +1,59 @@
+{% extends 'Admin/adminhead.html' %}
+{% load static %}
+
+{% block content %}
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Service Provider Profit</title>
+    <style>
+        table {
+            width: 70%;
+            margin: 30px auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #444;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #eaeaea;
+        }
+        h2 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Admin Profit</h2>
+
+<table>
+    <tr>
+        <th>Service Provider Name</th>
+        <th>Provider Service</th>
+        <th>Total works</th>
+        <th>Total Profit Earned</th>
+    </tr>
+
+    {% for p in profits %}
+    <tr>
+        <td>{{ p.serviceprovider__serviceprovider_name }}</td>
+        <td>{{ p.serviceprovider__serviceprovidertype__serviceprovidertype_name }}</td>
+        <td>{{ p.total_works }}</td>
+        <td>{{ p.total_profit }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="2">No profit data available</td>
+    </tr>
+    {% endfor %}
+</table>
+
+</body>
+</html>
+{% endblock content %}

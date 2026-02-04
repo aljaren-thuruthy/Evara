@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complaints</title>
+
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h3 {
+            margin-top: 40px;
+            color: #333;
+        }
+
+        .table-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        table thead {
+            background: #2c3e50;
+            color: #fff;
+        }
+
+        table th, table td {
+            padding: 12px 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        table th {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        table td {
+            font-size: 14px;
+            color: #333;
+        }
+
+        .reply-btn {
+            text-decoration: none;
+            padding: 6px 12px;
+            background: #3498db;
+            color: #fff;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        .reply-btn:hover {
+            background: #217dbb;
+        }
+
+        .reply-text {
+            background: #ecf0f1;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        .empty {
+            text-align: center;
+            color: #888;
+            padding: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h3>New Complaints</h3>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>SNO</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Title</th>
+                    <th>Content</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in viewcomplaintdata %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ i.user.newuser_name }}</td>
+                    <td>{{ i.user.newuser_email }}</td>
+                    <td>{{ i.complaint_title }}</td>
+                    <td>{{ i.complaint_content }}</td>
+                    <td>{{ i.complaint_date|date:"d-m-Y" }}</td>
+                    <td>
+                        <a href="{% url 'Admin:Reply' i.id %}" class="reply-btn">Reply</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="empty">No new complaints</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <h3>Replied Complaints</h3>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>SNO</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Title</th>
+                    <th>Content</th>
+                    <th>Date</th>
+                    <th>Reply</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in replied %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ i.user.newuser_name }}</td>
+                    <td>{{ i.user.newuser_email }}</td>
+                    <td>{{ i.complaint_title }}</td>
+                    <td>{{ i.complaint_content }}</td>
+                    <td>{{ i.complaint_date|date:"d-m-Y" }}</td>
+                    <td>
+                        <div class="reply-text">
+                            {{ i.complaint_reply }}
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="empty">No replied complaints</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User List</title>
+</head>
+<body>
+    <form action="" method="post">
+        {% csrf_token %}
+        <h3>USER LIST</h3>
+        <table border="1">
+        <tr>
+            <td>SL.No</td>
+            <td>Name</td>
+            <td>Gender</td>
+            <td>Contact</td>
+            <td>Email</td>
+            <td>District</td>
+            <td>Place</td>
+            <td>Address</td>
+            <td>Photo</td>
+        </tr>
+       {% for i in userdata %}
+        <tr>
+            <td>{{forloop.counter}}</td>
+            <td>{{i.newuser_name}}</td>
+            <td>{{i.newuser_gender}}</td>
+            <td>{{i.newuser_contact}}</td>
+            <td>{{i.newuser_email}}</td>
+            <td>{{i.newuser_place.district.district_name}}</td>
+            <td>{{i.newuser_place.place_name}}</td>
+            <td>{{i.newuser_address}}</td>
+            <td><img src="{{i.newuser_photo.url}}" width="50px" height="50"></td>
+            <td>
+                {% if i.user_status == 0 %}
+            <a href="{% url 'Admin:acceptuser' i.id %}">Accept</a>
+            <a href="{% url 'Admin:rejectuser' i.id %}">Reject</a>
+                {%  elif i.user_status == 1  %}
+                Verified
+                {%  elif i.user_status == 2  %}
+                Rejected
+                {% endif %}
+            </td>
+        </tr>
+         {% endfor %}
+    </table>
+
+    <br>
+     <h3>Verified USER LIST</h3>
+        <table border="1">
+        <tr>
+            <td>SL.No</td>
+            <td>Name</td>
+            <td>Gender</td>
+            <td>Contact</td>
+            <td>Email</td>
+            <td>District</td>
+            <td>Place</td>
+            <td>Address</td>
+            <td>Photo</td>
+        </tr>
+       {% for i in accuserdata %}
+        <tr>
+            <td>{{forloop.counter}}</td>
+            <td>{{i.newuser_name}}</td>
+            <td>{{i.newuser_gender}}</td>
+            <td>{{i.newuser_contact}}</td>
+            <td>{{i.newuser_email}}</td>
+            <td>{{i.newuser_place.district.district_name}}</td>
+            <td>{{i.newuser_place.place_name}}</td>
+            <td>{{i.newuser_address}}</td>
+            <td><img src="{{i.newuser_photo.url}}" width="50px" height="50"></td>
+            <td>
+                {% if i.user_status == 0 %}
+            <a href="{% url 'Admin:acceptuser' i.id %}">Accept</a>
+            <a href="{% url 'Admin:rejectuser' i.id %}">Reject</a>
+                {%  elif i.user_status == 1  %}
+                Verified
+                {%  elif i.user_status == 2  %}
+                Rejected
+                {% endif %}
+            </td>
+        </tr>
+         {% endfor %}
+    </table>
+<br>
+     <h3>Rejected USER LIST</h3>
+<table border="1">
+        <tr>
+            <td>SL.No</td>
+            <td>Name</td>
+            <td>Gender</td>
+            <td>Contact</td>
+            <td>Email</td>
+            <td>District</td>
+            <td>Place</td>
+            <td>Address</td>
+            <td>Photo</td>
+        </tr>
+       {% for i in rejuserdata %}
+        <tr>
+            <td>{{forloop.counter}}</td>
+            <td>{{i.newuser_name}}</td>
+            <td>{{i.newuser_gender}}</td>
+            <td>{{i.newuser_contact}}</td>
+            <td>{{i.newuser_email}}</td>
+            <td>{{i.newuser_place.district.district_name}}</td>
+            <td>{{i.newuser_place.place_name}}</td>
+            <td>{{i.newuser_address}}</td>
+            <td><img src="{{i.newuser_photo.url}}" width="50px" height="50"></td>
+            <td>
+                {% if i.user_status == 0 %}
+            <a href="{% url 'Admin:acceptuser' i.id %}">Accept</a>
+            <a href="{% url 'Admin:rejectuser' i.id %}">Reject</a>
+                {%  elif i.user_status == 1  %}
+                Verified
+                {%  elif i.user_status == 2  %}
+                Rejected
+                {% endif %}
+            </td>
+        </tr>
+         {% endfor %}
+    </table>
+
+    </form>
+</body>
+</html>
+
+{% if msg %}
+<script>alert("{{msg}}")
+    window.location="{% url 'Admin:UserList' %}"
+</script>
+{% endif %}

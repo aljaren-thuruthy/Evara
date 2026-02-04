@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Complaint Management</title>
+
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f6f9;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: auto;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #2c3e50;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th {
+            background: #2c3e50;
+            color: #fff;
+        }
+
+        tr:nth-child(even) {
+            background: #f2f2f2;
+        }
+
+        .pending {
+            color: #e67e22;
+            font-weight: bold;
+        }
+
+        .replied {
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .reply-btn {
+            text-decoration: none;
+            padding: 6px 14px;
+            background: #3498db;
+            color: #fff;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .reply-btn:hover {
+            background: #2980b9;
+        }
+
+        textarea {
+            width: 100%;
+            height: 50px;
+            resize: none;
+        }
+
+        input[type="submit"] {
+            padding: 6px 14px;
+            background: #27ae60;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        input[type="submit"]:hover {
+            background: #1e8449;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    
+    <h2>Pending Complaints</h2>
+
+    <table>
+        <tr>
+            <th>S.No</th>
+            <th>Username</th>
+            <th>User Contact</th>
+            <th>Service Provider</th>
+            <th>Email</th>
+            <th>Contact</th>
+            <th>Title</th>
+            <th>Content</th>
+            <th>Date</th>
+            <th>Reply</th>
+            <th>Status</th>
+        </tr>
+
+        {% for i in viewcomplaintdata %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ i.user.newuser_name }}</td>
+            <td>{{ i.user.newuser_contact }}</td>
+            <td>{{ i.serviceprovider.serviceprovider_name }}</td>
+            <td>{{ i.serviceprovider.serviceprovider_email }}</td>
+            <td>{{ i.serviceprovider.serviceprovider_contact }}</td>
+            <td>{{ i.complaint_title }}</td>
+            <td>{{ i.complaint_content }}</td>
+            <td>{{ i.complaint_date }}</td>
+            <td>
+                <form method="post" action="{% url 'Admin:AddReply' i.id %}">
+                    {% csrf_token %}
+                    <textarea name="complaint_reply" placeholder="Type reply here..." required></textarea>
+                    <input type="submit" value="Send">
+                </form>
+            </td>
+            <td class="pending">Pending</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="10" style="text-align:center;">No pending complaints found</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    
+    <h2>Replied Complaints</h2>
+
+    <table>
+        <tr>
+            <th>S.No</th>
+            <th>User</th>
+            <th>Service Provider</th>
+            <th>Email</th>
+            <th>Contact</th>
+            <th>Title</th>
+            <th>Content</th>
+            <th>Reply</th>
+            <th>Date</th>
+            <th>Status</th>
+        </tr>
+
+        {% for i in replied %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ i.user.name }}</td>
+            <td>{{ i.serviceprovider.serviceprovider_name }}</td>
+            <td>{{ i.serviceprovider.serviceprovider_email }}</td>
+            <td>{{ i.serviceprovider.serviceprovider_contact }}</td>
+            <td>{{ i.complaint_title }}</td>
+            <td>{{ i.complaint_content }}</td>
+            <td>{{ i.complaint_reply }}</td>
+            <td>{{ i.complaint_date }}</td>
+            <td class="replied">Replied</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="10" style="text-align:center;">No replied complaints found</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</div>
+</body>
+</html>

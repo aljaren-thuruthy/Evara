@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+</head>
+<body>
+    <form action="" method="post">
+        {% csrf_token %}
+        <table border="1">
+           <tr>
+                <td>Name</td>
+                <td><input type="text" name="txt_name"  id="" value="{{userdata.newuser_name}}"></td>
+            </tr>
+             <tr>
+                <td>Email</td>
+                <td><input type="text" name="txt_email"  id="" value="{{userdata.newuser_email}}"></td>
+            </tr>
+             <tr>
+                <td>Contact</td>
+                <td><input type="text" name="txt_contact"  id="" value="{{userdata.newuser_contact}}"></td>
+            </tr>
+            <td>Address</td>
+            <td>
+                 <textarea name="txt_address" rows="4" cols="30">{{userdata.newuser_address}}</textarea>
+            </td>
+             <tr>
+                <td colspan="2" align="center">
+                    <input type="submit" value="Update" >
+                   
+                </td>
+            </tr>
+            </table>
+    </form>
+</body>
+</html>
+
+
+{% if msg %}
+<script> alert("{{msg}}")
+window.location="{% url 'User:Profile' %}"
+</script>
+{% endif %}

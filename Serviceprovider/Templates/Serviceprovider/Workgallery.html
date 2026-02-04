@@ -1,0 +1,81 @@
+{% extends 'Serviceprovider/shead.html' %}
+{% block content %}
+{% load static %}
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Work Gallery</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-5">
+
+    <!-- Upload Card -->
+    <div class="card shadow mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Add Work Gallery</h5>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <textarea name="txt_desc" class="form-control" rows="4" required></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Upload Photo</label>
+                    <input type="file" name="txt_photo" class="form-control" required>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-success px-4">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Gallery Section -->
+    <div class="row">
+        {% for i in gallerydata %}
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <img src="{{ i.work_photo.url }}" class="card-img-top" style="height:220px; object-fit:cover;">
+                <div class="card-body">
+                    <p class="card-text">{{ i.work_description }}</p>
+                </div>
+                <div class="card-footer text-center">
+                    <a href="{% url 'Serviceprovider:deletegallery' i.id %}"
+                       class="btn btn-sm btn-danger"
+                       onclick="return confirm('Delete this photo?');">
+                        Delete
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-center text-muted">No gallery images uploaded yet.</p>
+        {% endfor %}
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+{% if msg %}
+<script>
+    alert("{{ msg }}");
+    window.location = "{% url 'Serviceprovider:Workgallery' %}";
+</script>
+{% endif %}
+
+</body>
+</html>
+{% endblock content %}

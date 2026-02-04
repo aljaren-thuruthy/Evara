@@ -1,0 +1,171 @@
+{% extends 'Serviceprovider/shead.html' %}
+{% block content %}
+{% load static %}
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Provider Profile</title>
+    <style>
+        /* ================= Body ================= */
+        body {
+            font-family: 'Poppins', 'Roboto', sans-serif;
+            background-color: #e6f7ea; /* light green background */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        /* ================= Form Container ================= */
+        form {
+            background-color: #ffffff;
+            padding: 30px 40px;
+            margin: 50px 0;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 700px;
+        }
+
+        /* ================= Table Styling ================= */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 16px;
+        }
+
+        table tr {
+            border-bottom: 1px solid #ddd;
+            transition: background 0.3s;
+        }
+
+        table tr:hover {
+            background-color: #d4edda; /* subtle green hover */
+        }
+
+        table td {
+            padding: 12px 15px;
+        }
+
+        table td:first-child {
+            font-weight: 600;
+            color: #155724;
+            width: 40%;
+            background-color: #f0f9f4; /* light green for label column */
+        }
+
+        table td:last-child {
+            color: #333;
+        }
+
+        /* ================= Images ================= */
+        table img {
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* ================= Links ================= */
+        a {
+            text-decoration: none;
+            color: #28a745;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        a:hover {
+            text-decoration: underline;
+            color: #155724;
+        }
+
+        /* ================= Responsive ================= */
+        @media (max-width: 600px) {
+            table td:first-child {
+                display: block;
+                width: 100%;
+                margin-bottom: 5px;
+            }
+
+            table td:last-child {
+                display: block;
+                width: 100%;
+            }
+
+            table tr {
+                display: block;
+                margin-bottom: 15px;
+                border-bottom: 1px solid #ccc;
+            }
+
+            table img {
+                width: 100px;
+                height: 100px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <form action="" method="post">
+        {% csrf_token %}
+        <table>
+            <tr>
+                <td>Name</td>
+                <td>{{providerdata.serviceprovider_name}}</td>
+            </tr>
+            <tr>
+                <td>Contact</td>
+                <td>{{providerdata.serviceprovider_contact}}</td>
+            </tr>
+            <tr>
+                <td>Email</td>
+                <td>{{providerdata.serviceprovider_email}}</td>
+            </tr>
+            <tr>
+                <td>Address</td>
+                <td>{{providerdata.serviceprovider_address}}</td>
+            </tr>
+            <tr>
+                <td>Provider Photo</td>
+                <td align="center">
+                    <img src="{{providerdata.serviceprovider_photo.url}}" width="150" height="150">
+                </td>
+            </tr>
+            <tr>
+                <td>Provider Proof</td>
+                <td align="center">
+                    <img src="{{providerdata.serviceprovider_idproof.url}}" width="150" height="150">
+                </td>
+            </tr>
+            <tr>
+                <td>District</td>
+                <td>{{providerdata.place.district.district_name}}</td>
+            </tr>
+            <tr>
+                <td>Place</td>
+                <td>{{providerdata.place.place_name}}</td>
+            </tr>
+            <tr>
+                <td>Service Provider Type</td>
+                <td>{{providerdata.serviceprovidertype.serviceprovidertype_name}}</td>
+            </tr>
+            <tr>
+                <td colspan="2" align="center">
+                    <a href="{% url 'Serviceprovider:Serviceprovidereditprofile' %}">Edit Profile</a> | 
+                    <a href="{% url 'Serviceprovider:Providerchangepassword' %}">Change Password</a>
+                </td>
+            </tr>
+        </table>
+    </form>
+</body>
+
+</html>
+{% endblock content %}
