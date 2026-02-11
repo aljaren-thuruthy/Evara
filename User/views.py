@@ -6,6 +6,8 @@ from Serviceprovider.models import *
 from django.db.models import Sum
 from django.http import JsonResponse
 from datetime import datetime
+from django.db.models import Avg
+
 
 # Create your views here.
 def Profile(request):
@@ -73,6 +75,11 @@ def Viewserviceprovider(request):
     placedata = tbl_place.objects.all()
     servicedata = tbl_serviceprovidertype.objects.all()
     accservicedata = None   
+    avg_rating = tbl_rating.objects.aggregate(avg=Avg('rating_data'))['avg']
+    if avg_rating is None:
+        avg_rating = 0
+
+    avg_rating = round(avg_rating)
 
     if request.method == "POST":
         accservicedata = tbl_serviceprovider.objects.filter(serviceprovider_status=1)
@@ -95,22 +102,46 @@ def Viewserviceprovider(request):
         'districtdata': districtdata,
         'placedata': placedata,
         'servicedata': servicedata,
-        'accservicedata': accservicedata
+        'accservicedata': accservicedata,
+        'avg_rating': avg_rating,
+        'ar': [1,2,3,4,5]
+        
     })
 
-def Request(request,id):
-    requestdata=tbl_request.objects.all()
+def Request(request, id):
+    requestdata = tbl_request.objects.all()
     userdata = tbl_newuser.objects.get(id=request.session['uid'])
-    servicedata=tbl_services.objects.all()
-    providerdata=tbl_serviceprovider.objects.get(id=id)
-    if request.method=="POST":
-        todate=request.POST.get("txt_todate")
-        details=request.POST.get("txt_details")
-        service=tbl_services.objects.get(id=request.POST.get("sel_service"))
-        tbl_request.objects.create(request_todate=todate,request_details=details,service=service,serviceprovider=providerdata,user=userdata)
-        return render(request,"User/Request.html",{'msg':"Data Inserted"})
+    servicedata = tbl_services.objects.all()
+    providerdata = tbl_serviceprovider.objects.get(id=id)
+    serviceprovidertype = tbl_serviceprovidertype.objects.all()  # ✅ ADD THIS
+
+    if request.method == "POST":
+        todate = request.POST.get("txt_todate")
+        details = request.POST.get("txt_details")
+        service = tbl_services.objects.get(id=request.POST.get("sel_service"))
+
+        tbl_request.objects.create(
+            request_todate=todate,
+            request_details=details,
+            service=service,
+            serviceprovider=providerdata,
+            user=userdata
+        )
+
+        return render(request, "User/Request.html", {
+            'msg': "Data Inserted",
+            'serviceprovidertype': serviceprovidertype  # ✅ ADD THIS
+        })
+
     else:
-        return render(request,"User/Request.html",{'requestdata':requestdata,'userdata':userdata,'servicedata':servicedata,'providerdata':providerdata,})   
+        return render(request, "User/Request.html", {
+            'requestdata': requestdata,
+            'userdata': userdata,
+            'servicedata': servicedata,
+            'providerdata': providerdata,
+            'serviceprovidertype': serviceprovidertype  # ✅ ADD THIS
+        })
+
 
 def Viewwork(request, id):
     providerdata = tbl_serviceprovider.objects.get(id=id)
@@ -122,7 +153,20 @@ def Myrequest(request):
     userdata = tbl_newuser.objects.get(id=request.session['uid'])
     requestdata = tbl_request.objects.filter(user=userdata)
 
-    return render(request, "User/Myrequest.html", { 'userdata':userdata,'requestdata': requestdata  })
+    for r in requestdata:
+        myrating = tbl_rating.objects.filter(user=userdata, request=r).first()
+        print(myrating)
+        if myrating:
+            r.my_rating = myrating.rating_data
+        else:
+            r.my_rating = 0
+
+    return render(request, "User/Myrequest.html", {
+        'userdata': userdata,
+        'requestdata': requestdata,
+        'ar': [1,2,3,4,5]
+    })
+
 
 # def Paymentview(request, rid):
 #     userdata = tbl_newuser.objects.get(id=request.session['uid'])
@@ -170,12 +214,11 @@ def Paymentview(request, rid):
         }
     )
 
-def rating(request,mid):
+def rating(request,mid,id):
     userdata = tbl_newuser.objects.get(id=request.session['uid'])
     parray=[1,2,3,4,5]
     mid=mid
     # wdata=tbl_booking.objects.get(id=mid)
-    
     counts=0
     counts=stardata=tbl_rating.objects.filter(serviceprovider=mid).count()
     if counts>0:
@@ -185,20 +228,29 @@ def rating(request,mid):
             res=res+i.rating_data
         avg=res//counts
         # print(avg)
-        return render(request,"User/Rating.html",{'mid':mid,'data':stardata,'ar':parray,'avg':avg,'count':counts,'userdata':userdata})
+        return render(request,"User/Rating.html",{'mid':mid,'id':id,'data':stardata,'ar':parray,'avg':avg,'count':counts,'userdata':userdata})
     else:
-         return render(request,"User/Rating.html",{'mid':mid})
+         return render(request,"User/Rating.html",{'mid':mid,'id':id})
 
 def ajaxstar(request):
-    parray=[1,2,3,4,5]
-    rating_data=request.GET.get('rating_data')
+    parray = [1, 2, 3, 4, 5]
+    rating_data = request.GET.get('rating_data')
+    user_review = request.GET.get('user_review')
+    pid = request.GET.get('pid')        # This is probably serviceprovider id
+    requestid = request.GET.get('requestid')
     
-    user_review=request.GET.get('user_review')
-    pid=request.GET.get('pid')
-    # wdata=tbl_booking.objects.get(id=pid)
-    tbl_rating.objects.create(user=tbl_newuser.objects.get(id=request.session['uid']),user_review=user_review,rating_data=rating_data,serviceprovider=tbl_serviceprovider.objects.get(id=pid))
-    stardata=tbl_rating.objects.filter(serviceprovider=pid).order_by('-datetime')
-    return render(request,"User/AjaxRating.html",{'data':stardata,'ar':parray})
+    tbl_rating.objects.create(
+        user=tbl_newuser.objects.get(id=request.session['uid']),
+        user_review=user_review,
+        rating_data=rating_data,
+        serviceprovider=tbl_serviceprovider.objects.get(id=pid),
+        request=tbl_request.objects.get(id=requestid)
+         # Add request object here
+    )
+
+    stardata = tbl_rating.objects.filter(serviceprovider=pid).order_by('-datetime')
+    return render(request, "User/AjaxRating.html", {'data': stardata, 'ar': parray})
+
 
 def starrating(request):
     r_len = 0
@@ -224,6 +276,14 @@ def starrating(request):
     # rlen = r_len // 5
     # print(rlen)
     result = {"five":five,"four":four,"three":three,"two":two,"one":one,"total_review":ratecount}
+
+
+def Ajaxservice(request):
+    servicetypeid = request.GET.get('stid')
+    servicedata = tbl_services.objects.filter(servicetype=servicetypeid)
+    return render(request, 'User/Ajaxservice.html', {'servicedata': servicedata})
+
+
 
 def Logout(request):
        del request.session['uid']

@@ -75,11 +75,47 @@
         object-fit: cover;
         width: 40px;
         height: 40px;
+        cursor: pointer; /* Make images clickable */
     }
 
     form {
         max-width: 1000px;
         margin: auto;
+    }
+
+    /* Modal styles */
+    .modal {
+        display: none; 
+        position: fixed; 
+        z-index: 1000; 
+        padding-top: 60px; 
+        left: 0;
+        top: 0;
+        width: 100%; 
+        height: 100%; 
+        overflow: auto; 
+        background-color: rgba(0,0,0,0.8); 
+    }
+
+    .modal-content {
+        margin: auto;
+        display: block;
+        max-width: 90vw;
+        max-height: 90vh;
+        width: auto;
+        height: auto;
+        border-radius: 5px;
+        object-fit: contain;
+    }
+
+    .close {
+        position: absolute;
+        top: 20px;
+        right: 35px;
+        color: #fff;
+        font-size: 40px;
+        font-weight: bold;
+        cursor: pointer;
     }
 </style>
 
@@ -96,6 +132,7 @@
             <th>Address</th>
             <th>Photo</th>
             <th>Id proof</th>
+            <th>Certificate</th>
             <th>Place</th>
             <th>Service Type</th>
             <th colspan="2">Action</th>
@@ -109,6 +146,7 @@
             <td>{{ i.serviceprovider_address }}</td>
             <td><img src="{{ i.serviceprovider_photo.url }}"></td>
             <td><img src="{{ i.serviceprovider_idproof.url }}"></td>
+            <td><img src="{{ i.serviceprovider_certificate.url }}"></td>
             <td>{{ i.place.place_name }}</td>
             <td>{{ i.serviceprovidertype.serviceprovidertype_name }}</td>
             <td><a href="{% url 'Admin:acceptserviceprovider' i.id %}">Accept</a></td>
@@ -161,6 +199,7 @@
             <th>Address</th>
             <th>Photo</th>
             <th>Id proof</th>
+            <th>Certificate</th>
             <th>Place</th>
             <th>Service Type</th>
             <th colspan="2">Action</th>
@@ -174,6 +213,7 @@
             <td>{{ i.serviceprovider_address }}</td>
             <td><img src="{{ i.serviceprovider_photo.url }}"></td>
             <td><img src="{{ i.serviceprovider_idproof.url }}"></td>
+            <td><img src="{{ i.serviceprovider_certificate.url }}"></td>
             <td>{{ i.place.place_name }}</td>
             <td>{{ i.serviceprovidertype.serviceprovidertype_name }}</td>
             <td>
@@ -194,6 +234,36 @@
         {% endfor %}
     </table>
 </form>
+
+<!-- Modal HTML -->
+<div id="imgModal" class="modal">
+    <span class="close">&times;</span>
+    <img class="modal-content" id="modalImg">
+</div>
+
+<script>
+    // Modal script
+    const modal = document.getElementById("imgModal");
+    const modalImg = document.getElementById("modalImg");
+    const closeBtn = document.getElementsByClassName("close")[0];
+
+    document.querySelectorAll("table img").forEach(img => {
+        img.addEventListener("click", function() {
+            modal.style.display = "block";
+            modalImg.src = this.src;
+        });
+    });
+
+    closeBtn.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
 
 {% if msg %}
 <script>

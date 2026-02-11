@@ -177,6 +177,8 @@
                     <!-- <input type="text" name="user_name" id="user_name" class="form-control"
                         placeholder="Enter Your Name" /> -->
                     <input type="hidden" name="txt_lid" id="txt_lid" value="{{mid}}" />
+                    <input type="hidden" id="txt_requestid" value="{{ id }}">
+
                 </div>
                 <div class="form-group">
                     <textarea name="user_review" id="user_review" class="form-control"
@@ -271,6 +273,9 @@
 
             var product_id = $('#txt_lid').val();
 
+            var requestid = $('#txt_requestid').val();
+
+
             if (user_review == '') {
                 alert("Please Fill Both Field");
                 return false;
@@ -279,7 +284,7 @@
                 //alert(rating_data);
                 $.ajax({
                     url: "{% url 'User:ajaxstar' %}",
-                    data: { rating_data: rating_data, user_name: user_name, user_review: user_review, pid: product_id },
+                    data: { rating_data: rating_data, user_name: user_name, user_review: user_review, pid: product_id,requestid: requestid  },
                     success: function (data) {
                         $('#review_modal').modal('hide');
                         window.location.reload();
@@ -294,6 +299,9 @@
 
     function starrating() {
         var pdt = document.getElementById("txt_lid").value
+        
+
+
         var ur = "{% url 'User:starrating' %}"
         $.ajax({
             url: ur,

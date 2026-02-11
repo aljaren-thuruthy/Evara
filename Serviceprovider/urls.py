@@ -16,6 +16,7 @@ urlpatterns = [
     path('workstart/<int:reid>', views.workstart, name="workstart"),
     path('workend/<int:reid>', views.workend, name="workend"),
     path('set_amount/<int:rid>', views.set_amount, name="set_amount"),
+    path('bill/',views.bill,name="bill"),
     path('Logout/',views.Logout,name="Logout"),
 
 ]

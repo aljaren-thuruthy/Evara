@@ -34,6 +34,7 @@ class tbl_serviceprovider(models.Model):
     serviceprovider_address=models.CharField(max_length=15)
     serviceprovider_photo=models.FileField(upload_to='Assets/SellerDocs/')
     serviceprovider_idproof=models.FileField(upload_to='Assets/SellerDocs/')
+    serviceprovider_certificate=models.FileField(upload_to='Assets/SellerDocs/')
     place=models.ForeignKey(tbl_place,on_delete=models.CASCADE)
     serviceprovidertype=models.ForeignKey(tbl_serviceprovidertype,on_delete=models.CASCADE)
     serviceprovider_password=models.CharField(max_length=30)

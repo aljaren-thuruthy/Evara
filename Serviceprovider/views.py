@@ -148,6 +148,19 @@ def set_amount(request, rid):
     return render(request, "Serviceprovider/Payment.html", {'requestdata': requestdata})
 
                                                                                               
+def bill(request, rid):
+    request_obj = tbl_request.objects.get(id=rid)
+
+    if request.method == "POST":
+        request_obj.request_bill = request.FILES['request_bill']
+        request_obj.save()
+        return redirect('Viewrequest')
+
+    return render(
+        request,
+        "ServiceProvider/Bill.html",
+        {'requestdata': request_obj}
+    )
 
 
 def Logout(request):

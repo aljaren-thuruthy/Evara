@@ -131,9 +131,11 @@
             <input type="submit" value="Login" class="login-btn">
 
             <div class="links">
-                <a href="{% url 'Guest:NewSeller' %}">Seller</a> |
+                <!-- <a href="{% url 'Guest:NewSeller' %}">Seller</a> | -->
                 <a href="{% url 'Guest:Newuser' %}">User</a> |
-                <a href="{% url 'Guest:Serviceprovider' %}">Service Provider</a>
+                <a href="{% url 'Guest:Serviceprovider' %}">Service Provider</a> |
+                <a href="{% url 'Guest:index' %}">HomePage</a> |
+
             </div>
         </div>
     </form>

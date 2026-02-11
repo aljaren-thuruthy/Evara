@@ -306,16 +306,19 @@ def acceptserviceprovider(request,sid):
     data.serviceprovider_status=1
     data.save()
     email=data.serviceprovider_email
-    send_mail(
-        'Respected Sir/Madam ',#subject
-        "\rYour request was accepted  "
-        "\r1, You are  identified. "
-        "\r2, if you have a proof of id , you will be accepted within two or three days."
-        "\r By"
-        "\r ecobloom" ,#body
-        settings.EMAIL_HOST_USER,
-        [email],
-    )
+    # send_mail(
+    #     'Respected Sir/Madam ',#subject
+    #     "\r Your request was accepted  "
+    #     "\r You are  identified. "
+    #     "\r You can Login ."
+    #     "\r You are now an authorized member of our service team."
+    #     "\r You may now start accepting and completing assigned plumbing service requests ."
+    #     "\r  We wish you all the best ."
+    #     "\r "
+    #     "\r @Evara" ,#body
+    #     settings.EMAIL_HOST_USER,
+    #     [email],
+    # )
     return render(request,'Admin/Serviceproviderlist.html',{'msg':'verified'})  
     
 def rejectserviceprovider(request,sid):

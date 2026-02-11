@@ -146,10 +146,10 @@
         <th>Name</th>
         <th>Email</th>
         <th>Contact</th>
-        <th>Photo</th>
         <th>Place</th>
         <th>Service Type</th>
-     
+        <th>Rating</th>
+         
         <th colspan="2">Action</th>
     </tr>
 
@@ -159,9 +159,29 @@
         <td>{{ i.serviceprovider_name }}</td>
         <td>{{ i.serviceprovider_email }}</td>
         <td>{{ i.serviceprovider_contact }}</td>
-        <td><img src="{{ i.serviceprovider_photo.url }}" alt="Photo"></td>
         <td>{{ i.place.place_name }}</td>
         <td>{{ i.serviceprovidertype.serviceprovidertype_name }}</td>
+<td>
+                        <div>
+                            <!-- <h3 style="text-align:center;">Average Rating</h3> -->
+
+                            <div style="text-align:center; font-size:25px;">
+                                {% for i in ar %}
+                                {% if i <= avg_rating %} <i class="fas fa-star" style="color:orange;"></i>
+                                    {% else %}
+                                    <i class="fas fa-star" style="color:lightgray;"></i>
+                                    {% endif %}
+                                    {% endfor %}
+                            </div>
+
+                            <p style="text-align:center;">
+                                {{ avg_rating }} / 5
+                            </p>
+
+
+                        </div>
+                    </td>
+
         <td><a href="{% url 'User:Request' i.id %}">Request</a></td>
         
         <td><a href="{% url 'User:Viewwork' i.id %}">View Work</a></td>

@@ -210,6 +210,7 @@ form .submit-btn:hover {
                                 <a href="{% url 'Serviceprovider:workend' i.id %}" class="btn btn-warning">End</a>
                             {% elif i.request_status >= 4 %}
                                 <span class="badge secondary">Completed</span>
+                               
                             {% endif %}
                         </td>
                         <td>

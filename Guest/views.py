@@ -94,6 +94,7 @@ def Serviceprovider(request):
         address=request.POST.get("txt_address")
         photo=request.FILES.get("txt_photo")
         idproof=request.FILES.get("txt_idproof")
+        certificate=request.FILES.get("txt_certificate")
         placee=tbl_place.objects.get(id=request.POST.get("sel_place"))
         servicetype=tbl_serviceprovidertype.objects.get(id=request.POST.get("sel_service"))
         password=request.POST.get("txt_password")
@@ -101,7 +102,7 @@ def Serviceprovider(request):
         if providercount > 0:
             return render( request, "Guest/Serviceprovider.html", {'msg': "Email already exists",'providercount':providercount} )
         else:
-            tbl_serviceprovider.objects.create(serviceprovider_name=name,serviceprovider_email=email,serviceprovider_contact=contact,serviceprovider_address=address,serviceprovider_photo=photo,serviceprovider_idproof=idproof,place=placee,serviceprovidertype=servicetype,serviceprovider_password=password)
+            tbl_serviceprovider.objects.create(serviceprovider_name=name,serviceprovider_email=email,serviceprovider_contact=contact,serviceprovider_address=address,serviceprovider_photo=photo,serviceprovider_idproof=idproof,serviceprovider_certificate=certificate,place=placee,serviceprovidertype=servicetype,serviceprovider_password=password)
             return render(request,"Guest/Serviceprovider.html",{'msg':"Data Inserted"})
     else:
         return render(request,"Guest/Serviceprovider.html",{'providerdata':providerdata,'servicedata':servicedata,'placedata':placedata,'districtdata':districtdata}) 

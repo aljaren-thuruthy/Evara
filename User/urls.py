@@ -16,9 +16,12 @@ urlpatterns = [
     path('Request/<int:id>',views.Request,name="Request"),
     path('Viewwork/<int:id>/', views.Viewwork, name="Viewwork"),
     path('Myrequest/', views.Myrequest, name="Myrequest"),
+    path('ajax-service/', views.Ajaxservice, name='Ajaxservice'),
+
     path('Paymentview/<int:rid>', views.Paymentview, name="Paymentview"),
     path('Logout/', views.Logout, name="Logout"),
-    path('rating/<int:mid>',views.rating,name="rating"),  
+    path('rating/<int:mid>/<int:id>/',views.rating,name="rating"),  
     path('ajaxstar/',views.ajaxstar,name="ajaxstar"),
     path('starrating/',views.starrating,name="starrating"),
+    
 ]
