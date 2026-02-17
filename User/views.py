@@ -74,16 +74,11 @@ def Viewserviceprovider(request):
     districtdata = tbl_district.objects.all()
     placedata = tbl_place.objects.all()
     servicedata = tbl_serviceprovidertype.objects.all()
-    accservicedata = None   
-    avg_rating = tbl_rating.objects.aggregate(avg=Avg('rating_data'))['avg']
-    if avg_rating is None:
-        avg_rating = 0
 
-    avg_rating = round(avg_rating)
+    # Default show all active providers
+    accservicedata = tbl_serviceprovider.objects.filter(serviceprovider_status=1)
 
     if request.method == "POST":
-        accservicedata = tbl_serviceprovider.objects.filter(serviceprovider_status=1)
-
         district = request.POST.get("sel_district")
         place = request.POST.get("sel_place")
         service = request.POST.get("sel_service")
@@ -97,15 +92,24 @@ def Viewserviceprovider(request):
         if service:
             accservicedata = accservicedata.filter(serviceprovidertype_id=service)
 
+    # ⭐ Average rating for each provider (IMPORTANT)
+    for sp in accservicedata:
+        avg_rating = tbl_rating.objects.filter(
+            request__serviceprovider=sp
+        ).aggregate(avg=Avg('rating_data'))['avg']
+
+        if avg_rating is None:
+            avg_rating = 0
+
+        sp.avg_rating = round(avg_rating)
+
     return render(request, "User/Viewserviceprovider.html", {
         'userdata': userdata,
         'districtdata': districtdata,
         'placedata': placedata,
         'servicedata': servicedata,
         'accservicedata': accservicedata,
-        'avg_rating': avg_rating,
-        'ar': [1,2,3,4,5]
-        
+        'ar': [1, 2, 3, 4, 5]
     })
 
 def Request(request, id):

@@ -2,15 +2,16 @@
 {% block content %}
 {% load static %}
 
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Service Provider</title>
+
+    <!-- FontAwesome for Stars -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -43,7 +44,7 @@
             margin-bottom: 5px;
         }
 
-        .form-row select, 
+        .form-row select,
         .form-row input[type="submit"] {
             width: 100%;
             padding: 8px;
@@ -106,6 +107,7 @@
 
 <form method="post">
     {% csrf_token %}
+
     <div class="form-row">
         <label for="sel_district">District</label>
         <select name="sel_district" id="sel_district">
@@ -140,6 +142,7 @@
 
 {% if accservicedata %}
 <h3>Service Provider List</h3>
+
 <table>
     <tr>
         <th>SL.No</th>
@@ -149,7 +152,6 @@
         <th>Place</th>
         <th>Service Type</th>
         <th>Rating</th>
-         
         <th colspan="2">Action</th>
     </tr>
 
@@ -161,29 +163,25 @@
         <td>{{ i.serviceprovider_contact }}</td>
         <td>{{ i.place.place_name }}</td>
         <td>{{ i.serviceprovidertype.serviceprovidertype_name }}</td>
-<td>
-                        <div>
-                            <!-- <h3 style="text-align:center;">Average Rating</h3> -->
 
-                            <div style="text-align:center; font-size:25px;">
-                                {% for i in ar %}
-                                {% if i <= avg_rating %} <i class="fas fa-star" style="color:orange;"></i>
-                                    {% else %}
-                                    <i class="fas fa-star" style="color:lightgray;"></i>
-                                    {% endif %}
-                                    {% endfor %}
-                            </div>
+        <!-- ⭐ Rating Section -->
+        <td>
+            <div style="text-align:center; font-size:25px;">
+                {% for star in ar %}
+                    {% if star <= i.avg_rating %}
+                        <i class="fas fa-star" style="color:orange;"></i>
+                    {% else %}
+                        <i class="fas fa-star" style="color:lightgray;"></i>
+                    {% endif %}
+                {% endfor %}
+            </div>
 
-                            <p style="text-align:center;">
-                                {{ avg_rating }} / 5
-                            </p>
-
-
-                        </div>
-                    </td>
+            <p style="text-align:center;">
+                {{ i.avg_rating }} / 5
+            </p>
+        </td>
 
         <td><a href="{% url 'User:Request' i.id %}">Request</a></td>
-        
         <td><a href="{% url 'User:Viewwork' i.id %}">View Work</a></td>
     </tr>
     {% endfor %}
@@ -191,6 +189,7 @@
 {% endif %}
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
 <script>
     $('#sel_district').change(function () {
         var did = $(this).val();
@@ -211,6 +210,8 @@
     window.location="{% url 'User:Viewserviceprovider' %}";
 </script>
 {% endif %}
+
 </body>
 </html>
+
 {% endblock content %}

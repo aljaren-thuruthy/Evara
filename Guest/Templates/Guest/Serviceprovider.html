@@ -23,42 +23,49 @@
                 </div>
 
                 <div class="card-body">
-                    <form action="" method="post" enctype="multipart/form-data">
+                    <form action="" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
                         {% csrf_token %}
 
                         <div class="mb-3">
                             <label class="form-label">Name</label>
-                            <input type="text" name="txt_name" class="form-control" required>
+                            <input type="text" name="txt_name" id="txt_name" class="form-control" required>
+                            <small class="text-danger" id="name_err"></small>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Email</label>
-                            <input type="email" name="txt_email" class="form-control" required>
+                            <input type="email" name="txt_email" id="txt_email" class="form-control" required>
+                            <small class="text-danger" id="email_err"></small>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Contact</label>
-                            <input type="text" name="txt_contact" class="form-control" required>
+                            <input type="text" name="txt_contact" id="txt_contact" class="form-control" required>
+                            <small class="text-danger" id="contact_err"></small>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Address</label>
-                            <textarea name="txt_address" rows="3" class="form-control" required></textarea>
+                            <textarea name="txt_address" id="txt_address" rows="3" class="form-control" required></textarea>
+                            <small class="text-danger" id="address_err"></small>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Photo</label>
-                            <input type="file" name="txt_photo" class="form-control" required>
+                            <input type="file" name="txt_photo" id="txt_photo" class="form-control" required>
+                            <small class="text-danger" id="photo_err"></small>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">ID Proof</label>
-                            <input type="file" name="txt_idproof" class="form-control" required>
+                            <input type="file" name="txt_idproof" id="txt_idproof" class="form-control" required>
+                            <small class="text-danger" id="idproof_err"></small>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Education certificate</label>
-                            <input type="file" name="txt_certificate" class="form-control" required>
+                            <input type="file" name="txt_certificate" id="txt_certificate" class="form-control" required>
+                            <small class="text-danger" id="cert_err"></small>
                         </div>
 
                         <div class="mb-3">
@@ -71,6 +78,7 @@
                                 </option>
                                 {% endfor %}
                             </select>
+                            <small class="text-danger" id="district_err"></small>
                         </div>
 
                         <div class="mb-3">
@@ -78,11 +86,12 @@
                             <select name="sel_place" id="sel_place" class="form-select" required>
                                 <option value="">-- Select Place --</option>
                             </select>
+                            <small class="text-danger" id="place_err"></small>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Service Type</label>
-                            <select name="sel_service" class="form-select" required>
+                            <select name="sel_service" id="sel_service" class="form-select" required>
                                 <option value="">-- Select Service --</option>
                                 {% for i in servicedata %}
                                 <option value="{{i.id}}">
@@ -90,11 +99,13 @@
                                 </option>
                                 {% endfor %}
                             </select>
+                            <small class="text-danger" id="service_err"></small>
                         </div>
 
                         <div class="mb-4">
                             <label class="form-label">Password</label>
-                            <input type="password" name="txt_password" class="form-control" required>
+                            <input type="password" name="txt_password" id="txt_password" class="form-control" required>
+                            <small class="text-danger" id="pass_err"></small>
                         </div>
 
                         <div class="d-grid">
@@ -125,6 +136,107 @@
             }
         });
     });
+
+    function validateForm() {
+
+        // Clear errors
+        $(".text-danger").text("");
+
+        let name = $("#txt_name").val().trim();
+        let email = $("#txt_email").val().trim();
+        let contact = $("#txt_contact").val().trim();
+        let address = $("#txt_address").val().trim();
+        let photo = $("#txt_photo").val();
+        let idproof = $("#txt_idproof").val();
+        let cert = $("#txt_certificate").val();
+        let district = $("#sel_district").val();
+        let place = $("#sel_place").val();
+        let service = $("#sel_service").val();
+        let password = $("#txt_password").val();
+
+        let valid = true;
+
+        // Name validation
+        if (name == "") {
+            $("#name_err").text("Name is required");
+            valid = false;
+        }
+
+        // Contact validation (10 digits)
+        let contactPattern = /^[0-9]{10}$/;
+        if (!contactPattern.test(contact)) {
+            $("#contact_err").text("Contact must be exactly 10 digits");
+            valid = false;
+        }
+
+        // Address validation
+        if (address == "") {
+            $("#address_err").text("Address is required");
+            valid = false;
+        }
+
+        // District validation
+        if (district == "") {
+            $("#district_err").text("Please select district");
+            valid = false;
+        }
+
+        // Place validation
+        if (place == "") {
+            $("#place_err").text("Please select place");
+            valid = false;
+        }
+
+        // Service validation
+        if (service == "") {
+            $("#service_err").text("Please select service type");
+            valid = false;
+        }
+
+        // Password validation (min 6 characters)
+        if (password.length < 6) {
+            $("#pass_err").text("Password must be at least 6 characters");
+            valid = false;
+        }
+
+        // File validation (only images for photo)
+        if (photo == "") {
+            $("#photo_err").text("Photo is required");
+            valid = false;
+        } else {
+            let ext = photo.split('.').pop().toLowerCase();
+            if (ext != "jpg" && ext != "jpeg" && ext != "png") {
+                $("#photo_err").text("Photo must be JPG, JPEG, or PNG");
+                valid = false;
+            }
+        }
+
+        // ID Proof validation (pdf/jpg/png)
+        if (idproof == "") {
+            $("#idproof_err").text("ID Proof is required");
+            valid = false;
+        } else {
+            let ext2 = idproof.split('.').pop().toLowerCase();
+            if (ext2 != "pdf" && ext2 != "jpg" && ext2 != "jpeg" && ext2 != "png") {
+                $("#idproof_err").text("ID proof must be PDF/JPG/PNG");
+                valid = false;
+            }
+        }
+
+        // Certificate validation (pdf/jpg/png)
+        if (cert == "") {
+            $("#cert_err").text("Certificate is required");
+            valid = false;
+        } else {
+            let ext3 = cert.split('.').pop().toLowerCase();
+            if (ext3 != "pdf" && ext3 != "jpg" && ext3 != "jpeg" && ext3 != "png") {
+                $("#cert_err").text("Certificate must be PDF/JPG/PNG");
+                valid = false;
+            }
+        }
+
+        return valid;
+    }
 </script>
 
 {% if msg %}
