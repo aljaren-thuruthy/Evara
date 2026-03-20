@@ -7,22 +7,37 @@
 
   <div class="row">
 
-    <!-- ===== SERVICE FORM (Left) ===== -->
+    <!-- ===== FORM ===== -->
     <div class="col-md-4 col-sm-6 mb-3">
       <div class="card shadow-sm border-info">
         <div class="card-header py-2 text-center text-white" style="background-color:#17a2b8;">
-          <h6 class="mb-0">{% if data %} Edit Service {% else %} Add Service {% endif %}</h6>
+          <h6 class="mb-0">
+            {% if editdata %} Edit Service {% else %} Add Service {% endif %}
+          </h6>
         </div>
+
         <div class="card-body py-2">
-          <form action="" method="post">
+
+          <!-- ✅ MESSAGE -->
+          {% if msg %}
+          <div class="alert alert-success text-center">
+            {{ msg }}
+          </div>
+          {% endif %}
+
+          <form method="post">
             {% csrf_token %}
-            
+
+            <!-- hidden id -->
+            <input type="hidden" name="txt_id" value="{{ editdata.id|default:'' }}">
+
             <div class="form-group mb-2">
               <label class="small fw-bold">Service Provider Type</label>
               <select name="sel_service" class="form-select form-select-sm border-info" required>
                 <option value="">Select Service Provider</option>
                 {% for i in servicedata %}
-                <option value="{{ i.id }}" {% if data and i.servicetype.id == i.id %}selected{% endif %}>
+                <option value="{{ i.id }}"
+                  {% if editdata and i.id == editdata.servicetype.id %}selected{% endif %}>
                   {{ i.serviceprovidertype_name }}
                 </option>
                 {% endfor %}
@@ -31,72 +46,96 @@
 
             <div class="form-group mb-2">
               <label class="small fw-bold">Service Name</label>
-              <input type="text" name="txt_service" class="form-control form-control-sm border-info"
-                     value="{{ data.service_name }}" placeholder="Enter Service Name" required>
+              <input type="text" name="txt_service"
+                     value="{{ editdata.service_name|default:'' }}"
+                     class="form-control form-control-sm border-info"
+                     placeholder="Enter Service Name" required>
             </div>
 
             <div class="text-center mt-2">
               <button type="submit" class="btn btn-success btn-sm px-4">
-                <i class="fas fa-save"></i> Submit
+                {% if editdata %} Update {% else %} Submit {% endif %}
               </button>
+
+              {% if editdata %}
+              <a href="{% url 'Admin:Service' %}" class="btn btn-secondary btn-sm">
+                Cancel
+              </a>
+              {% endif %}
             </div>
+
           </form>
         </div>
       </div>
     </div>
 
-    <!-- ===== SERVICE LIST (Right) ===== -->
+    <!-- ===== LIST ===== -->
     <div class="col-md-8">
       <div class="card shadow-sm border-primary">
         <div class="card-header py-2 text-center text-white" style="background-color:#007bff;">
           <h6 class="mb-0">Service List</h6>
         </div>
+
         <div class="card-body py-2">
+
+          <!-- ✅ MESSAGE -->
+          {% if msg %}
+          <div class="alert alert-success text-center">
+            {{ msg }}
+          </div>
+          {% endif %}
+
           <div class="table-responsive" style="max-height:500px; overflow-y:auto;">
             <table class="table table-sm table-bordered table-hover align-middle mb-0">
               <thead class="table-primary">
                 <tr>
-                  <th style="width:50px;">SNO</th>
+                  <th>SNO</th>
                   <th>Service Type</th>
                   <th>Service Name</th>
-                  <th class="text-center" style="width:100px;">Action</th>
+                  <th class="text-center">Action</th>
                 </tr>
               </thead>
+
               <tbody>
                 {% for i in data %}
-                <tr style="transition: background 0.3s;" 
-                    onmouseover="this.style.background='#e9f7ff';" 
-                    onmouseout="this.style.background='';">
+                <tr>
                   <td>{{ forloop.counter }}</td>
                   <td>{{ i.servicetype.serviceprovidertype_name }}</td>
                   <td>{{ i.service_name }}</td>
                   <td class="text-center">
-                    <a href="{% url 'Admin:delservicetype' i.id %}" class="btn btn-danger btn-sm">
-                      <i class="fas fa-trash"></i> Delete
+
+                    <!-- EDIT -->
+                    <a href="{% url 'Admin:editservice' i.id %}" 
+                       class="btn btn-warning btn-sm">
+                      Edit
                     </a>
+
+                    <!-- DELETE -->
+                    <a href="{% url 'Admin:delservicetype' i.id %}"
+                       onclick="return confirm('Are you sure you want to delete this service?')"
+                       class="btn btn-danger btn-sm">
+                      Delete
+                    </a>
+
                   </td>
                 </tr>
                 {% empty %}
                 <tr>
-                  <td colspan="4" class="text-center text-muted">No Services Found</td>
+                  <td colspan="4" class="text-center text-muted">
+                    No Services Found
+                  </td>
                 </tr>
                 {% endfor %}
               </tbody>
+
             </table>
           </div>
+
         </div>
       </div>
     </div>
 
   </div>
-
 </div>
-
-{% if msg %}
-<script>
-    alert("{{ msg }}");
-    window.location = "{% url 'Admin:Service' %}";
-</script>
-{% endif %}
 
 {% endblock content %}

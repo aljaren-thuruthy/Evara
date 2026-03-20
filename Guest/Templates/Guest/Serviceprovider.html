@@ -2,250 +2,200 @@
 {% block content %}
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Service Provider Registration</title>
+<style>
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
+.card-header {
+    background: linear-gradient(135deg, #007bff, #0056b3) !important;
+    color: white;
+}
 
-<div class="container py-5">
+
+.card-body,
+.card-body label,
+.card-body input,
+.card-body select,
+.card-body textarea {
+    color: #000 !important;
+}
+
+.form-control, .form-select {
+    color: #000 !important;
+}
+
+
+::placeholder {
+    color: #555 !important;
+}
+
+
+label {
+    font-weight: 600;
+    color: #000 !important;
+}
+
+.text-danger {
+    font-size: 0.8rem;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    border: none;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #0056b3, #007bff);
+}
+
+
+.form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0,123,255,0.5);
+}
+</style>
+
+<div class="container mt-4">
     <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <div class="card shadow-lg border-0">
-                <div class="card-header bg-primary text-white text-center">
-                    <h4 class="mb-0">Service Provider Registration</h4>
+        <div class="col-md-8">
+
+            <div class="card shadow">
+                <div class="card-header text-center">
+                    <h5>📝 Service Provider Registration</h5>
                 </div>
 
                 <div class="card-body">
-                    <form action="" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+
+                    {% if msg %}
+                    <div class="alert alert-success text-center">
+                        {{ msg }}
+                    </div>
+                    {% endif %}
+
+                    <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
 
-                        <div class="mb-3">
-                            <label class="form-label">Name</label>
-                            <input type="text" name="txt_name" id="txt_name" class="form-control" required>
-                            <small class="text-danger" id="name_err"></small>
+                        <div class="row">
+
+                           
+                            <div class="col-md-6 mb-3">
+                                <label>Full Name</label>
+                                <input type="text" name="txt_name"
+                                       value="{{ old.txt_name }}"
+                                       class="form-control {% if errors.name %}border-danger{% endif %}">
+                                <small class="text-danger">{{ errors.name }}</small>
+                            </div>
+
+                     
+                            <div class="col-md-6 mb-3">
+                                <label>Email</label>
+                                <input type="text" name="txt_email"
+                                       value="{{ old.txt_email }}"
+                                       class="form-control {% if errors.email %}border-danger{% endif %}">
+                                <small class="text-danger">{{ errors.email }}</small>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label>Contact</label>
+                                <input type="text" name="txt_contact"
+                                       value="{{ old.txt_contact }}"
+                                       class="form-control {% if errors.contact %}border-danger{% endif %}">
+                                <small class="text-danger">{{ errors.contact }}</small>
+                            </div>
+
+                          
+                            <div class="col-md-6 mb-3">
+                                <label>District</label>
+                                <select name="sel_district" id="sel_district" class="form-select">
+                                    <option value="">Select</option>
+                                    {% for i in districtdata %}
+                                    <option value="{{i.id}}"
+                                        {% if old.sel_district == i.id|stringformat:"s" %}selected{% endif %}>
+                                        {{i.district_name}}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            
+                            <div class="col-md-6 mb-3">
+                                <label>Place</label>
+                                <select name="sel_place" id="sel_place" class="form-select">
+                                    <option value="">Select</option>
+                                </select>
+                            </div>
+
+                   
+                            <div class="col-md-6 mb-3">
+                                <label>Service</label>
+                                <select name="sel_service" class="form-select">
+                                    <option value="">Select</option>
+                                    {% for i in servicedata %}
+                                    <option value="{{i.id}}"
+                                        {% if old.sel_service == i.id|stringformat:"s" %}selected{% endif %}>
+                                        {{i.serviceprovidertype_name }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                         
+                            <div class="col-12 mb-3">
+                                <label>Address</label>
+                                <textarea name="txt_address" class="form-control">{{ old.txt_address }}</textarea>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label>Photo</label>
+                                <input type="file" name="txt_photo" class="form-control">
+                            </div>
+
+                        
+                            <div class="col-md-6 mb-3">
+                                <label>ID Proof</label>
+                                <input type="file" name="txt_idproof" class="form-control">
+                            </div>
+
+                          
+                            <div class="col-md-6 mb-3">
+                                <label>Certificate</label>
+                                <input type="file" name="txt_certificate" class="form-control">
+                            </div>
+
+                           
+                            <div class="col-md-6 mb-3">
+                                <label>Password</label>
+                                <input type="password" name="txt_password"
+                                       class="form-control {% if errors.password %}border-danger{% endif %}">
+                                <small class="text-danger">{{ errors.password }}</small>
+                            </div>
+
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label">Email</label>
-                            <input type="email" name="txt_email" id="txt_email" class="form-control" required>
-                            <small class="text-danger" id="email_err"></small>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Contact</label>
-                            <input type="text" name="txt_contact" id="txt_contact" class="form-control" required>
-                            <small class="text-danger" id="contact_err"></small>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Address</label>
-                            <textarea name="txt_address" id="txt_address" rows="3" class="form-control" required></textarea>
-                            <small class="text-danger" id="address_err"></small>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Photo</label>
-                            <input type="file" name="txt_photo" id="txt_photo" class="form-control" required>
-                            <small class="text-danger" id="photo_err"></small>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">ID Proof</label>
-                            <input type="file" name="txt_idproof" id="txt_idproof" class="form-control" required>
-                            <small class="text-danger" id="idproof_err"></small>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Education certificate</label>
-                            <input type="file" name="txt_certificate" id="txt_certificate" class="form-control" required>
-                            <small class="text-danger" id="cert_err"></small>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">District</label>
-                            <select name="sel_district" id="sel_district" class="form-select" required>
-                                <option value="">-- Select District --</option>
-                                {% for i in districtdata %}
-                                <option value="{{i.id}}">
-                                    {{i.district_name}}
-                                </option>
-                                {% endfor %}
-                            </select>
-                            <small class="text-danger" id="district_err"></small>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Place</label>
-                            <select name="sel_place" id="sel_place" class="form-select" required>
-                                <option value="">-- Select Place --</option>
-                            </select>
-                            <small class="text-danger" id="place_err"></small>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Service Type</label>
-                            <select name="sel_service" id="sel_service" class="form-select" required>
-                                <option value="">-- Select Service --</option>
-                                {% for i in servicedata %}
-                                <option value="{{i.id}}">
-                                    {{i.serviceprovidertype_name}}
-                                </option>
-                                {% endfor %}
-                            </select>
-                            <small class="text-danger" id="service_err"></small>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="form-label">Password</label>
-                            <input type="password" name="txt_password" id="txt_password" class="form-control" required>
-                            <small class="text-danger" id="pass_err"></small>
-                        </div>
-
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">
-                                Register
-                            </button>
-                        </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            Register
+                        </button>
 
                     </form>
+
                 </div>
             </div>
+
         </div>
     </div>
 </div>
 
-<!-- jQuery -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
 <script>
-    $('#sel_district').change(function () {
-        var did = $(this).val();
-        var ur = "{% url 'Guest:Ajaxplace' %}";
-        $.ajax({
-            url: ur,
-            data: { did: did },
-            success: function (data) {
-                $('#sel_place').html(data);
-            }
-        });
+$('#sel_district').change(function () {
+    var did = $(this).val();
+    $.ajax({
+        url: "{% url 'Guest:Ajaxplace' %}",
+        data: { did: did },
+        success: function (data) {
+            $('#sel_place').html(data);
+        }
     });
-
-    function validateForm() {
-
-        // Clear errors
-        $(".text-danger").text("");
-
-        let name = $("#txt_name").val().trim();
-        let email = $("#txt_email").val().trim();
-        let contact = $("#txt_contact").val().trim();
-        let address = $("#txt_address").val().trim();
-        let photo = $("#txt_photo").val();
-        let idproof = $("#txt_idproof").val();
-        let cert = $("#txt_certificate").val();
-        let district = $("#sel_district").val();
-        let place = $("#sel_place").val();
-        let service = $("#sel_service").val();
-        let password = $("#txt_password").val();
-
-        let valid = true;
-
-        // Name validation
-        if (name == "") {
-            $("#name_err").text("Name is required");
-            valid = false;
-        }
-
-        // Contact validation (10 digits)
-        let contactPattern = /^[0-9]{10}$/;
-        if (!contactPattern.test(contact)) {
-            $("#contact_err").text("Contact must be exactly 10 digits");
-            valid = false;
-        }
-
-        // Address validation
-        if (address == "") {
-            $("#address_err").text("Address is required");
-            valid = false;
-        }
-
-        // District validation
-        if (district == "") {
-            $("#district_err").text("Please select district");
-            valid = false;
-        }
-
-        // Place validation
-        if (place == "") {
-            $("#place_err").text("Please select place");
-            valid = false;
-        }
-
-        // Service validation
-        if (service == "") {
-            $("#service_err").text("Please select service type");
-            valid = false;
-        }
-
-        // Password validation (min 6 characters)
-        if (password.length < 6) {
-            $("#pass_err").text("Password must be at least 6 characters");
-            valid = false;
-        }
-
-        // File validation (only images for photo)
-        if (photo == "") {
-            $("#photo_err").text("Photo is required");
-            valid = false;
-        } else {
-            let ext = photo.split('.').pop().toLowerCase();
-            if (ext != "jpg" && ext != "jpeg" && ext != "png") {
-                $("#photo_err").text("Photo must be JPG, JPEG, or PNG");
-                valid = false;
-            }
-        }
-
-        // ID Proof validation (pdf/jpg/png)
-        if (idproof == "") {
-            $("#idproof_err").text("ID Proof is required");
-            valid = false;
-        } else {
-            let ext2 = idproof.split('.').pop().toLowerCase();
-            if (ext2 != "pdf" && ext2 != "jpg" && ext2 != "jpeg" && ext2 != "png") {
-                $("#idproof_err").text("ID proof must be PDF/JPG/PNG");
-                valid = false;
-            }
-        }
-
-        // Certificate validation (pdf/jpg/png)
-        if (cert == "") {
-            $("#cert_err").text("Certificate is required");
-            valid = false;
-        } else {
-            let ext3 = cert.split('.').pop().toLowerCase();
-            if (ext3 != "pdf" && ext3 != "jpg" && ext3 != "jpeg" && ext3 != "png") {
-                $("#cert_err").text("Certificate must be PDF/JPG/PNG");
-                valid = false;
-            }
-        }
-
-        return valid;
-    }
+});
 </script>
 
-{% if msg %}
-<script>
-    alert("{{msg}}");
-    window.location = "{% url 'Guest:Serviceprovider' %}";
-</script>
-{% endif %}
-
-</body>
-</html>
 {% endblock content %}

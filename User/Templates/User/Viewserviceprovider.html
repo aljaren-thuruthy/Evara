@@ -2,6 +2,7 @@
 {% block content %}
 {% load static %}
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,209 +10,611 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Service Provider</title>
 
-    <!-- FontAwesome for Stars -->
+    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
+        * {
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        h2, h3 {
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ededf6 0%, #dbdce7 100%);
+            min-height: 100vh;
+            padding: 30px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header Section */
+        .page-header {
             text-align: center;
-            color: #333;
+            margin-bottom: 40px;
         }
 
-        form {
-            max-width: 600px;
-            margin: 20px auto;
-            background-color: #fff;
-            padding: 15px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-        }
-
-        .form-row {
-            margin-bottom: 15px;
-        }
-
-        .form-row label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .form-row select,
-        .form-row input[type="submit"] {
-            width: 100%;
-            padding: 8px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-        }
-
-        .form-row input[type="submit"] {
-            background-color: #4a90e2;
+        .page-header h2 {
             color: white;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
+            font-size: 2.5em;
+            font-weight: 600;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            margin-bottom: 10px;
         }
 
-        .form-row input[type="submit"]:hover {
-            background-color: #357ABD;
+        .page-header h2 i {
+            margin-right: 10px;
+            color: #ffd700;
+        }
+
+        .page-header .subtitle {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.1em;
+        }
+
+        /* Filter Card */
+        .filter-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 30px;
+            margin-bottom: 40px;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .filter-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .filter-title i {
+            font-size: 24px;
+            color: #f7cbe0;
+            margin-right: 10px;
+        }
+
+        .filter-title h3 {
+            color: #333;
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 0;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+            font-size: 0.95em;
+        }
+
+        .form-group label i {
+            color: #f3cfeb;
+            margin-right: 5px;
+            width: 18px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+            background-color: #f8f9fa;
+        }
+
+        .form-control:hover {
+            border-color: #b3b3b3;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background-color: white;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-submit i {
+            font-size: 1.1em;
+        }
+
+        /* Results Section */
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .results-header h3 {
+            font-size: 1.5em;
+            font-weight: 600;
+        }
+
+        .results-header h3 i {
+            margin-right: 8px;
+            color: #ffd700;
+        }
+
+        .results-count {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            backdrop-filter: blur(5px);
+        }
+
+        /* Table Card */
+        .table-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .table-responsive {
+            overflow-x: auto;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px auto;
-            background-color: #fff;
+            min-width: 1000px;
         }
 
-        table th, table td {
-            border: 1px solid #ccc;
-            padding: 8px;
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+            padding: 15px;
             text-align: center;
+            font-size: 0.95em;
+            white-space: nowrap;
         }
 
-        table th {
-            background-color: #f0f0f0;
+        th i {
+            margin-right: 5px;
+            font-size: 0.9em;
         }
 
-        table img {
-            width: 50px;
-            height: 50px;
-            border-radius: 4px;
+        td {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #f0f0f0;
+            color: #555;
         }
 
-        a {
+        tr:hover td {
+            background-color: #f8f9fa;
+        }
+
+        /* Rating Stars */
+        .rating-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .stars {
+            display: flex;
+            gap: 2px;
+            font-size: 20px;
+        }
+
+        .stars .fa-star {
+            transition: transform 0.2s ease;
+        }
+
+        .stars .fa-star:hover {
+            transform: scale(1.1);
+        }
+
+        .rating-text {
+            font-size: 0.9em;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .rating-text strong {
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .btn-action {
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-weight: 500;
             text-decoration: none;
-            color: #fff;
-            background-color: #28a745;
-            padding: 5px 10px;
-            border-radius: 4px;
-            display: inline-block;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
         }
 
-        a:hover {
-            background-color: #218838;
+        .btn-request {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+        }
+
+        .btn-request:hover {
+            background: linear-gradient(135deg, #218838, #1e7e34);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-work {
+            background: linear-gradient(135deg, #17a2b8, #0dcaf0);
+            color: white;
+        }
+
+        .btn-work:hover {
+            background: linear-gradient(135deg, #138496, #0b5e6b);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(23, 162, 184, 0.3);
+        }
+
+        /* No Results */
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 20px;
+        }
+
+        .no-results i {
+            font-size: 4em;
+            color: #ccc;
+            margin-bottom: 15px;
+        }
+
+        .no-results p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 20px 15px;
+            }
+
+            .page-header h2 {
+                font-size: 2em;
+            }
+
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn-action {
+                justify-content: center;
+            }
+
+            td {
+                padding: 12px 8px;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Placeholder for select when loading */
+        select:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <!-- Header -->
+        <div class="page-header">
+            <h2>
+                <i class="fas fa-tools"></i>
+                View Service Provider
+            </h2>
+            <p class="subtitle">Find the best service providers in your area</p>
+        </div>
 
-<h2>View Service Provider</h2>
-
-<form method="post">
-    {% csrf_token %}
-
-    <div class="form-row">
-        <label for="sel_district">District</label>
-        <select name="sel_district" id="sel_district">
-            <option value="">--Select District--</option>
-            {% for i in districtdata %}
-            <option value="{{ i.id }}">{{ i.district_name }}</option>
-            {% endfor %}
-        </select>
-    </div>
-
-    <div class="form-row">
-        <label for="sel_place">Place</label>
-        <select name="sel_place" id="sel_place">
-            <option value="">--Select Place--</option>
-        </select>
-    </div>
-
-    <div class="form-row">
-        <label for="sel_service">Service Provider Type</label>
-        <select name="sel_service" id="sel_service">
-            <option value="">Select Service Provider</option>
-            {% for i in servicedata %}
-            <option value="{{ i.id }}">{{ i.serviceprovidertype_name }}</option>
-            {% endfor %}
-        </select>
-    </div>
-
-    <div class="form-row">
-        <input type="submit" value="Submit">
-    </div>
-</form>
-
-{% if accservicedata %}
-<h3>Service Provider List</h3>
-
-<table>
-    <tr>
-        <th>SL.No</th>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Contact</th>
-        <th>Place</th>
-        <th>Service Type</th>
-        <th>Rating</th>
-        <th colspan="2">Action</th>
-    </tr>
-
-    {% for i in accservicedata %}
-    <tr>
-        <td>{{ forloop.counter }}</td>
-        <td>{{ i.serviceprovider_name }}</td>
-        <td>{{ i.serviceprovider_email }}</td>
-        <td>{{ i.serviceprovider_contact }}</td>
-        <td>{{ i.place.place_name }}</td>
-        <td>{{ i.serviceprovidertype.serviceprovidertype_name }}</td>
-
-        <!-- ⭐ Rating Section -->
-        <td>
-            <div style="text-align:center; font-size:25px;">
-                {% for star in ar %}
-                    {% if star <= i.avg_rating %}
-                        <i class="fas fa-star" style="color:orange;"></i>
-                    {% else %}
-                        <i class="fas fa-star" style="color:lightgray;"></i>
-                    {% endif %}
-                {% endfor %}
+        <!-- Filter Section -->
+        <div class="filter-card">
+            <div class="filter-title">
+                <i class="fas fa-sliders-h"></i>
+                <h3>Filter Service Providers</h3>
             </div>
+            
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="filter-grid">
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-map-marker-alt"></i>
+                            District
+                        </label>
+                        <select name="sel_district" id="sel_district" class="form-control">
+                            <option value="">-- Select District --</option>
+                            {% for i in districtdata %}
+                            <option value="{{ i.id }}">{{ i.district_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
 
-            <p style="text-align:center;">
-                {{ i.avg_rating }} / 5
-            </p>
-        </td>
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-city"></i>
+                            Place
+                        </label>
+                        <select name="sel_place" id="sel_place" class="form-control">
+                            <option value="">-- Select Place --</option>
+                        </select>
+                    </div>
 
-        <td><a href="{% url 'User:Request' i.id %}">Request</a></td>
-        <td><a href="{% url 'User:Viewwork' i.id %}">View Work</a></td>
-    </tr>
-    {% endfor %}
-</table>
-{% endif %}
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-briefcase"></i>
+                            Service Type
+                        </label>
+                        <select name="sel_service" id="sel_service" class="form-control">
+                            <option value="">-- Select Service Type --</option>
+                            {% for i in servicedata %}
+                            <option value="{{ i.id }}">{{ i.serviceprovidertype_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+                    <div class="form-group">
+                        <label>&nbsp;</label>
+                        <button type="submit" class="btn-submit">
+                            <i class="fas fa-search"></i>
+                            Search Providers
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
 
-<script>
-    $('#sel_district').change(function () {
-        var did = $(this).val();
-        var ur = "{% url 'Guest:Ajaxplace' %}";
-        $.ajax({
-            url: ur,
-            data: { did: did },
-            success: function (data) {
-                $('#sel_place').html(data);
-            }
+        <!-- Results Section -->
+        {% if accservicedata %}
+        <div class="results-header">
+            <h3>
+                <i class="fas fa-list"></i>
+                Service Provider List
+            </h3>
+            <span class="results-count">
+                <i class="fas fa-users"></i>
+                {{ accservicedata|length }} Provider(s) Found
+            </span>
+        </div>
+
+        <div class="table-card">
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-hashtag"></i> SL.No</th>
+                            <th><i class="fas fa-user"></i> Name</th>
+                            <th><i class="fas fa-envelope"></i> Email</th>
+                            <th><i class="fas fa-phone"></i> Contact</th>
+                            <th><i class="fas fa-map-pin"></i> Place</th>
+                            <th><i class="fas fa-briefcase"></i> Service Type</th>
+                            <th><i class="fas fa-briefcase"></i> Service Charge</th>
+                            <th><i class="fas fa-star"></i> Rating</th>
+                            <th colspan="2"><i class="fas fa-cog"></i> Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in accservicedata %}
+                        <tr>
+                            <td><strong>#{{ forloop.counter }}</strong></td>
+                            <td>{{ i.serviceprovider_name }}</td>
+                            <td>{{ i.serviceprovider_email }}</td>
+                            <td>{{ i.serviceprovider_contact }}</td>
+                            <td>{{ i.place.place_name }}</td>
+                            <td>{{ i.serviceprovidertype.serviceprovidertype_name }}</td>
+                            <td>1000</td>
+                            <td>
+                                <div class="rating-container">
+                                    <div class="stars">
+                                        {% for star in ar %}
+                                            {% if star <= i.avg_rating %}
+                                                <i class="fas fa-star" style="color: #ffd700;"></i>
+                                            {% else %}
+                                                <i class="fas fa-star" style="color: #e0e0e0;"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    <span class="rating-text">
+                                        <strong>{{ i.avg_rating }}</strong> / 5
+                                    </span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a href="{% url 'User:Request' i.id %}" class="btn-action btn-request">
+                                        <i class="fas fa-hand-paper"></i>
+                                        Request
+                                    </a>
+                            </td>
+                            <td>
+                                    <a href="{% url 'User:Viewwork' i.id %}" class="btn-action btn-work">
+                                        <i class="fas fa-briefcase"></i>
+                                        View Work
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <!-- No Results Message -->
+        <div class="table-card">
+            <div class="no-results">
+                <i class="fas fa-search"></i>
+                <p>No service providers found matching your criteria.</p>
+                <p style="font-size: 0.9em; color: #999;">Try adjusting your filters or selecting different options.</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- jQuery for AJAX -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // District change - Load places via AJAX
+            $('#sel_district').change(function() {
+                var did = $(this).val();
+                
+                if (did) {
+                    // Show loading state
+                    $('#sel_place').prop('disabled', true);
+                    $('#sel_place').html('<option value="">Loading places...</option>');
+                    
+                    var ur = "{% url 'Guest:Ajaxplace' %}";
+                    $.ajax({
+                        url: ur,
+                        data: { did: did },
+                        success: function(data) {
+                            $('#sel_place').html(data);
+                            $('#sel_place').prop('disabled', false);
+                        },
+                        error: function() {
+                            $('#sel_place').html('<option value="">Error loading places</option>');
+                            $('#sel_place').prop('disabled', false);
+                        }
+                    });
+                } else {
+                    $('#sel_place').html('<option value="">-- Select Place --</option>');
+                }
+            });
+
+            // Add animation to table rows on hover
+            $('tbody tr').hover(
+                function() {
+                    $(this).find('.btn-action').css('transform', 'scale(1.05)');
+                },
+                function() {
+                    $(this).find('.btn-action').css('transform', 'scale(1)');
+                }
+            );
+
+            // Add subtle animation to stars
+            $('.stars').each(function() {
+                $(this).find('.fa-star').hover(
+                    function() {
+                        $(this).css('transform', 'scale(1.2)');
+                    },
+                    function() {
+                        $(this).css('transform', 'scale(1)');
+                    }
+                );
+            });
         });
-    });
-</script>
+    </script>
 
-{% if msg %}
-<script>
-    alert("{{ msg }}");
-    window.location="{% url 'User:Viewserviceprovider' %}";
-</script>
-{% endif %}
-
+    <!-- Message Alert -->
+    {% if msg %}
+    <script>
+        (function() {
+            alert("{{ msg|escapejs }}");
+            window.location = "{% url 'User:Viewserviceprovider' %}";
+        })();
+    </script>
+    {% endif %}
 </body>
 </html>
-
 {% endblock content %}

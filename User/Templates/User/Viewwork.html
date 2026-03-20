@@ -2,85 +2,88 @@
 {% block content %}
 {% load static %}
 
-<style>
-    body {
-        font-family: "Segoe UI", sans-serif;
-        background: #f2f4f8;
-        margin: 0;
-        padding: 15px;
-    }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Work Gallery</title>
 
-    h2 {
-        text-align: center;
-        margin-bottom: 15px;
-        color: #333;
-        font-size: 20px;
-    }
+    <style>
+        body {
+            font-family: "Segoe UI", sans-serif;
+            background: #f2f4f8;
+            margin: 0;
+            padding: 20px;
+        }
 
-    .gallery-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); /* small cards */
-        gap: 10px;
-        max-width: 500px; /* keeps gallery compact */
-        margin: auto;
-    }
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #222;
+            font-size: 26px;
+            font-weight: 600;
+        }
 
-    .gallery-card {
-        background: #fff;
-        border-radius: 8px;
-        overflow: hidden;
-        box-shadow: 0 3px 8px rgba(0,0,0,0.05);
-        transition: transform 0.3s ease;
-        text-align: center;
-    }
-
-    .gallery-card:hover {
-        transform: translateY(-2px);
-    }
-
-    .gallery-card img {
-        width: 100%;
-        aspect-ratio: 1 / 1; /* perfect square */
-        object-fit: cover;
-        border-bottom: 1px solid #eee;
-    }
-
-    .gallery-content {
-        padding: 4px; /* very small padding */
-    }
-
-    .gallery-content h4 {
-        margin: 2px 0;
-        color: #111;
-        font-size: 12px;
-    }
-
-    .gallery-content p {
-        margin: 0;
-        color: #555;
-        line-height: 1.2;
-        font-size: 9px;
-    }
-
-    .empty-msg {
-        text-align: center;
-        color: #777;
-        font-size: 12px;
-        grid-column: 1/-1;
-    }
-
-    @media (max-width: 600px) {
+        /* ✅ BIG RESPONSIVE GRID */
         .gallery-container {
-            grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
         }
+
+        /* ✅ CARD DESIGN */
+        .gallery-card {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: 0.3s;
+        }
+
+        .gallery-card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* ✅ BIG IMAGE */
+        .gallery-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+
+        .gallery-content {
+            padding: 12px;
+        }
+
         .gallery-content h4 {
-            font-size: 10px;
+            margin: 5px 0;
+            color: #111;
+            font-size: 16px;
         }
+
         .gallery-content p {
-            font-size: 8px;
+            color: #555;
+            font-size: 13px;
+            line-height: 1.4;
         }
-    }
-</style>
+
+        .empty-msg {
+            text-align: center;
+            color: #777;
+            font-size: 14px;
+            grid-column: 1/-1;
+        }
+
+        /* 📱 MOBILE */
+        @media (max-width: 600px) {
+            .gallery-card img {
+                height: 180px;
+            }
+        }
+    </style>
+</head>
+
+<body>
 
 <h2>Work Gallery</h2>
 
@@ -88,17 +91,27 @@
 
     {% for i in gallerydata %}
     <div class="gallery-card">
-        <img src="{{ i.work_photo.url }}" alt="Work Image">
+
+        <!-- ✅ Safe Image -->
+        {% if i.work_photo %}
+            <img src="{{ i.work_photo.url }}" alt="Work Image">
+        {% else %}
+            <img src="{% static 'images/no-image.png' %}" alt="No Image">
+        {% endif %}
 
         <div class="gallery-content">
             <h4>Work {{ forloop.counter }}</h4>
             <p>{{ i.work_description }}</p>
         </div>
+
     </div>
     {% empty %}
         <p class="empty-msg">No works uploaded</p>
     {% endfor %}
 
 </div>
+
+</body>
+</html>
 
 {% endblock content %}

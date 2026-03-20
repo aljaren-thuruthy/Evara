@@ -7,17 +7,21 @@ from django.db.models import Sum
 from django.http import JsonResponse
 from datetime import datetime
 from django.db.models import Avg
+from django.views.decorators.cache import cache_control
 
 
 # Create your views here.
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def Profile(request):
         userdata=tbl_newuser.objects.get(id=request.session['uid'])
         return render(request,"User/Profile.html",{'userdata':userdata}) 
 
-
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def ChangePassword(request):
     return render(request,"User/ChangePassword.html")
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def EditProfile(request):
     userdata=tbl_newuser.objects.get(id=request.session['uid'])
     if request.method=="POST":
@@ -34,10 +38,15 @@ def EditProfile(request):
     else:    
         return render(request,"User/EditProfile.html",{'userdata':userdata})
 
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def Homepage(request):
+    if 'uid' not in request.session:
+        return redirect("Guest:login")
     userdata=tbl_newuser.objects.get(id=request.session['uid'])
     return render(request,"User/Homepage.html",{'userdata':userdata})    
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def Complaint(request):
     complaintdata=tbl_complaint.objects.filter(user=request.session['uid'])
     userdata=tbl_newuser.objects.get(id=request.session['uid'])
@@ -48,7 +57,8 @@ def Complaint(request):
         return render(request,"User/Complaint.html",{'msg':'Complaint Registered'})
     else:
         return render(request,"User/Complaint.html",{'complaintdata':complaintdata})
-    
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)    
 def SComplaint(request, sid):
     complaintdata = tbl_complaint.objects.filter(user=request.session['uid'])
     userdata = tbl_newuser.objects.get(id=request.session['uid'])
@@ -62,18 +72,19 @@ def SComplaint(request, sid):
     else:
         return render(request, "User/Complaint.html", {'complaintdata': complaintdata,'providerdata': providerdata})
 
-
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def delcomplaint(request,did):
         tbl_complaint.objects.get(id=did).delete()
         return redirect("User:Complaint")
 
   
-
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def Viewserviceprovider(request):
     userdata = tbl_newuser.objects.get(id=request.session['uid'])
     districtdata = tbl_district.objects.all()
     placedata = tbl_place.objects.all()
     servicedata = tbl_serviceprovidertype.objects.all()
+    amountdata=tbl_providerservice.objects.all()
 
     # Default show all active providers
     accservicedata = tbl_serviceprovider.objects.filter(serviceprovider_status=1)
@@ -102,6 +113,7 @@ def Viewserviceprovider(request):
             avg_rating = 0
 
         sp.avg_rating = round(avg_rating)
+       
 
     return render(request, "User/Viewserviceprovider.html", {
         'userdata': userdata,
@@ -109,9 +121,11 @@ def Viewserviceprovider(request):
         'placedata': placedata,
         'servicedata': servicedata,
         'accservicedata': accservicedata,
+        'amountdata':amountdata,
         'ar': [1, 2, 3, 4, 5]
     })
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def Request(request, id):
     requestdata = tbl_request.objects.all()
     userdata = tbl_newuser.objects.get(id=request.session['uid'])
@@ -133,7 +147,7 @@ def Request(request, id):
         )
 
         return render(request, "User/Request.html", {
-            'msg': "Data Inserted",
+            'msg': "Request send",
             'serviceprovidertype': serviceprovidertype  # ✅ ADD THIS
         })
 
@@ -146,13 +160,14 @@ def Request(request, id):
             'serviceprovidertype': serviceprovidertype  # ✅ ADD THIS
         })
 
-
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def Viewwork(request, id):
     providerdata = tbl_serviceprovider.objects.get(id=id)
     gallerydata = tbl_workgallery.objects.filter(serviceprovider=providerdata)
 
     return render(request, "User/Viewwork.html", {  'gallerydata': gallerydata, 'providerdata': providerdata })
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def Myrequest(request):
     userdata = tbl_newuser.objects.get(id=request.session['uid'])
     requestdata = tbl_request.objects.filter(user=userdata)
@@ -186,10 +201,14 @@ def Myrequest(request):
 #         return render(request,"User/Paymentview.html",{'requestdata': req,'profit_amount':profit_amount})
 
 
-
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def Paymentview(request, rid):
     userdata = tbl_newuser.objects.get(id=request.session['uid'])
     req = tbl_request.objects.get(id=rid)
+
+
+    if req.request_amount == 0:
+        return redirect('User:Myrequest')  
 
     profit_amount = req.request_amount * 0.10  # 10% profit
 
@@ -218,6 +237,7 @@ def Paymentview(request, rid):
         }
     )
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def rating(request,mid,id):
     userdata = tbl_newuser.objects.get(id=request.session['uid'])
     parray=[1,2,3,4,5]
@@ -236,6 +256,7 @@ def rating(request,mid,id):
     else:
          return render(request,"User/Rating.html",{'mid':mid,'id':id})
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def ajaxstar(request):
     parray = [1, 2, 3, 4, 5]
     rating_data = request.GET.get('rating_data')
@@ -255,7 +276,7 @@ def ajaxstar(request):
     stardata = tbl_rating.objects.filter(serviceprovider=pid).order_by('-datetime')
     return render(request, "User/AjaxRating.html", {'data': stardata, 'ar': parray})
 
-
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def starrating(request):
     r_len = 0
     five = four = three = two = one = 0
@@ -281,16 +302,16 @@ def starrating(request):
     # print(rlen)
     result = {"five":five,"four":four,"three":three,"two":two,"one":one,"total_review":ratecount}
 
-
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def Ajaxservice(request):
     servicetypeid = request.GET.get('stid')
     servicedata = tbl_services.objects.filter(servicetype=servicetypeid)
     return render(request, 'User/Ajaxservice.html', {'servicedata': servicedata})
 
 
-
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def Logout(request):
-       del request.session['uid']
+       request.session.flush()
        return redirect("Guest:Login")    
 
 

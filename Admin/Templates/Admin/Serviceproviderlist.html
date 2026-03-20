@@ -174,14 +174,14 @@
             <td>{{ i.serviceprovider_contact }}</td>
             <td>{{ i.complaint_count }}</td>
             <td>
-                {% if i.complaint_count > 5 %}
+                {% if i.complaint_count > 3 %}
                 <span style="color:red;">Too many complaints</span>
                 {% else %}
                 Active
                 {% endif %}
             </td>
             <td>
-                {% if i.complaint_count >= 5 %}
+                {% if i.complaint_count >= 3 %}
                 <a href="{% url 'Admin:rejectserviceprovider' i.id %}" style="background-color:black;color:white;">Block</a>
                 {% else %}—{% endif %}
             </td>

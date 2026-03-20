@@ -1,0 +1,68 @@
+{% extends 'Admin/adminhead.html' %}
+{% load static %}
+
+{% block content %}
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Provider Week Wise Chart</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <h2 style="text-align:center;">Week Wise Service Provider Joined</h2>
+
+    <div style="width: 80%; margin: auto;">
+        <canvas id="weekChart"></canvas>
+    </div>
+
+    <script>
+        const labels = {{ labels|safe }};
+        const counts = {{ counts|safe }};
+
+        const ctx = document.getElementById('weekChart').getContext('2d');
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Service Providers Joined',
+                    data: counts,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: "Count of Service Providers"
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: "Week"
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
+
+{% endblock content %}

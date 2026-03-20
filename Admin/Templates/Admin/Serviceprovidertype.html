@@ -3,8 +3,6 @@
 
 {% block content %}
 
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -89,19 +87,14 @@
 
         .delete-link {
             color: #dc3545;
-            text-decoration: none;
+            background: none;
+            border: none;
+            cursor: pointer;
             font-weight: 500;
         }
 
         .delete-link:hover {
             text-decoration: underline;
-        }
-
-        @media (max-width: 600px) {
-            .container {
-                margin: 20px;
-                padding: 20px;
-            }
         }
     </style>
 </head>
@@ -111,10 +104,9 @@
 <div class="container">
     <h2>Service Provider Type</h2>
 
-    <form action="" method="post">
+    <form method="post">
         {% csrf_token %}
 
-        <!-- Form Table -->
         <table class="form-table">
             <tr>
                 <td><strong>Service Provider Type</strong></td>
@@ -129,7 +121,6 @@
             </tr>
         </table>
 
-        <!-- List Table -->
         <table>
             <tr>
                 <th>SNO</th>
@@ -142,9 +133,9 @@
                 <td>{{ forloop.counter }}</td>
                 <td>{{ i.serviceprovidertype_name }}</td>
                 <td>
-                    <a href="{% url 'Admin:delservice' i.id %}" class="delete-link">
+                    <button type="button" onclick="deleteService({{ i.id }})" class="delete-link">
                         Delete
-                    </a>
+                    </button>
                 </td>
             </tr>
             {% empty %}
@@ -156,13 +147,53 @@
     </form>
 </div>
 
+<!-- ✅ SWEETALERT -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- ✅ INSERT / ERROR MESSAGE -->
 {% if msg %}
 <script>
-    alert("{{ msg }}");
-    window.location = "{% url 'Admin:Serviceprovidertype' %}";
+Swal.fire({
+    icon: '{{ msg_type }}',
+    title: '{% if msg_type == "success" %}Success!{% else %}Error!{% endif %}',
+    text: '{{ msg }}',
+    confirmButtonText: 'OK'
+});
 </script>
 {% endif %}
 
+<!-- ✅ DELETE SUCCESS MESSAGE -->
+{% if messages %}
+<script>
+{% for message in messages %}
+Swal.fire({
+    icon: '{{ message.tags }}',
+    title: 'Success!',
+    text: '{{ message }}',
+    confirmButtonText: 'OK'
+});
+{% endfor %}
+</script>
+{% endif %}
+
+<!-- ✅ DELETE CONFIRM -->
+<script>
+function deleteService(id) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "This service type will be deleted!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = "/Admin/delservice/" + id + "/";
+        }
+    });
+}
+</script>
+
 </body>
 </html>
+
 {% endblock content %}

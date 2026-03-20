@@ -2,132 +2,214 @@
 {% block content %}
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New User</title>
+<style>
+    .form-control,
+.form-control-sm,
+.form-select,
+.form-select-sm {
+    color: #000 !important;
+}
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
+.form-control::placeholder {
+    color: #555 !important;
+}
+    body {
+        background: linear-gradient(135deg, #e9ebee, #f4f6f9);
+    }
 
-<div class="container mt-5 mb-5">
+    .card {
+        border-radius: 15px;
+        border: none;
+    }
+
+    .card-header {
+        background: linear-gradient(135deg, #0d6efd, #0047ab);
+        color: rgb(30, 28, 28);
+        padding: 15px;
+    }
+
+    .card-body {
+        background: #f4f8ff;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #003366;
+        font-size: 14px;
+    }
+
+    .form-control-sm, .form-select-sm {
+        border-radius: 8px;
+        border: 1px solid #040404;
+        font-size: 13px;
+    }
+
+    .form-control-sm:focus, .form-select-sm:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 5px rgba(13,110,253,0.4);
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #0d6efd, #0047ab);
+        border: none;
+        border-radius: 25px;
+    }
+
+    .btn-secondary {
+        border-radius: 25px;
+    }
+
+    input[type="radio"] {
+        accent-color: #1b1c1c;
+    }
+</style>
+
+<div class="container mt-4">
     <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow-lg rounded-4">
-                <div class="card-header text-center bg-primary text-white">
-                    <h4>User Registration</h4>
+        <div class="col-md-11">
+
+            <div class="card shadow">
+
+                <div class="card-header text-center">
+                    <h5>🔵 User Registration</h5>
                 </div>
-                <div class="card-body">
+
+                <div class="card-body p-3">
+
+                    <!-- SUCCESS -->
+                    {% if success %}
+                    <div class="alert alert-success">{{ success }}</div>
+                    {% endif %}
 
                     <form action="" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
 
-                        <div class="mb-3">
-                            <label class="form-label">Name</label>
-                            <input type="text" name="txt_name" class="form-control" required>
-                        </div>
+                        <div class="row g-2">
 
-                        <div class="mb-3">
-                            <label class="form-label">Gender</label><br>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="txt_gender" value="Male">
-                                <label class="form-check-label">Male</label>
+                            <!-- LEFT -->
+                            <div class="col-md-6">
+
+                                <div class="mb-2">
+                                    <label class="form-label">Full Name</label>
+                                    <input type="text" name="txt_name" value="{{ data.txt_name }}" class="form-control form-control-sm">
+                                </div>
+
+                                <div class="mb-2">
+                                    <label class="form-label">Gender</label><br>
+                                    <input type="radio" name="txt_gender" value="Male" {% if data.txt_gender == "Male" %}checked{% endif %}> Male
+                                    <input type="radio" name="txt_gender" value="Female" class="ms-2" {% if data.txt_gender == "Female" %}checked{% endif %}> Female
+                                </div>
+
+                                <div class="mb-2">
+                                    <label class="form-label">Contact</label>
+                                    <input type="number" name="txt_contact" value="{{ data.txt_contact }}" class="form-control form-control-sm">
+                                    <small class="text-danger">{{ errors.contact|default:"" }}</small>
+                                </div>
+
+                                <div class="mb-2">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" name="txt_email" value="{{ data.txt_email }}" class="form-control form-control-sm">
+                                    <small class="text-danger">{{ errors.email|default:"" }}</small>
+                                </div>
+
+                                <div class="mb-2">
+                                    <label class="form-label">Password</label>
+                                    <input type="password" name="txt_password" class="form-control form-control-sm">
+                                </div>
+
                             </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="txt_gender" value="Female">
-                                <label class="form-check-label">Female</label>
+
+                            <!-- RIGHT -->
+                            <div class="col-md-6">
+
+                                <div class="mb-2">
+                                    <label class="form-label">Confirm Password</label>
+                                    <input type="password" name="txt_confirmpassword" class="form-control form-control-sm">
+                                    <small class="text-danger">{{ errors.cpassword|default:"" }}</small>
+                                </div>
+
+                                <div class="mb-2">
+                                    <label class="form-label">District</label>
+                                    <select name="sel_district" id="sel_district" class="form-select form-select-sm">
+                                        <option value="">Select</option>
+                                        {% for i in districtdata %}
+                                        <option value="{{i.id}}">{{i.district_name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="mb-2">
+                                    <label class="form-label">Place</label>
+                                    <select name="sel_place" id="sel_place" class="form-select form-select-sm">
+                                        <option>Select District First</option>
+                                    </select>
+                                    <small class="text-danger">{{ errors.place|default:"" }}</small>
+                                </div>
+
+                                <div class="mb-2">
+                                    <label class="form-label">Address</label>
+                                    <textarea name="txt_address" class="form-control form-control-sm" rows="2">{{ data.txt_address }}</textarea>
+                                </div>
+
+                                <div class="mb-2">
+                                    <label class="form-label">Photo</label>
+                                    <input type="file" name="txt_photo" class="form-control form-control-sm">
+                                </div>
+
                             </div>
+
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label">Contact</label>
-                            <input type="number" name="txt_contact" class="form-control" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Email</label>
-                            <input type="email" name="txt_email" class="form-control" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Password</label>
-                            <input type="password" name="txt_password" class="form-control" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Confirm Password</label>
-                            <input type="password" name="txt_confirmpassword" class="form-control" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">District</label>
-                            <select name="sel_district" id="sel_district" class="form-select" required>
-                                <option value="">Select District</option>
-                                {% for i in districtdata %}
-                                <option value="{{i.id}}">{{i.district_name}}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Place</label>
-                            <select name="sel_place" id="sel_place" class="form-select" required>
-                                <option value="">Select Place</option>
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Address</label>
-                            <textarea name="txt_address" class="form-control" rows="3"></textarea>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Photo</label>
-                            <input type="file" name="txt_photo" class="form-control">
-                        </div>
-
-                        <div class="text-center">
-                            <button type="submit" class="btn btn-success px-4">Submit</button>
-                            <button type="reset" class="btn btn-secondary px-4">Cancel</button>
+                        <div class="text-center mt-3">
+                            <button type="submit" class="btn btn-primary btn-sm px-4">Register</button>
+                            <button type="reset" class="btn btn-secondary btn-sm px-4">Reset</button>
                         </div>
 
                     </form>
 
                 </div>
+
             </div>
+
         </div>
     </div>
 </div>
 
-<!-- jQuery -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
 <script>
+$(document).ready(function () {
+
+    var selected_district = "{{ data.sel_district }}";
+    var selected_place = "{{ data.sel_place }}";
+
+    if (selected_district) {
+        $('#sel_district').val(selected_district);
+
+        $.ajax({
+            url: "{% url 'Guest:Ajaxplace' %}",
+            data: { did: selected_district },
+            success: function (data) {
+                $('#sel_place').html(data);
+
+                if (selected_place) {
+                    $('#sel_place').val(selected_place);
+                }
+            }
+        });
+    }
+
     $('#sel_district').change(function () {
         var did = $(this).val();
-        var ur = "{% url 'Guest:Ajaxplace' %}"
         $.ajax({
-            url: ur,
+            url: "{% url 'Guest:Ajaxplace' %}",
             data: { did: did },
             success: function (data) {
                 $('#sel_place').html(data);
             }
         });
     });
-</script>
 
-{% if msg %}
-<script>
-    alert("{{msg}}");
-    window.location = "{% url 'Guest:Newuser' %}";
+});
 </script>
-{% endif %}
-
-</body>
-</html>
 
 {% endblock content %}
