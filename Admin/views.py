@@ -17,6 +17,9 @@ from django.shortcuts import render
 from django.db.models import Sum
 from django.db.models.functions import ExtractWeek
 from django.views.decorators.cache import cache_control
+from django.urls import reverse
+from django.shortcuts import redirect
+
 
 
 
@@ -375,10 +378,10 @@ def Serviceprovidertype(request):
         'servicedata': servicedata
     })
 
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
-def delservice(request, sid):
-    tbl_serviceprovidertype.objects.get(id=sid).delete()
-    return redirect("Admin:Serviceprovidertype")   
+def delservicetype(request, stid):
+    tbl_services.objects.get(id=stid).delete()
+    return redirect("/Admin/Service")
+ 
 
 
 
@@ -422,62 +425,84 @@ def rejectserviceprovider(request,sid):
     data.serviceprovider_status=2
     data.save()
     return render(request,'Admin/Serviceproviderlist.html',{'msg':'rejected'})      
+from django.views.decorators.cache import cache_control
+from django.shortcuts import render, redirect
+
+from django.shortcuts import render, redirect
+from django.views.decorators.cache import cache_control
+from .models import tbl_services, tbl_serviceprovidertype
+
+from django.views.decorators.cache import cache_control
+from django.urls import reverse
+from Admin.models import tbl_services, tbl_serviceprovidertype
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def Service(request):
     servicedata = tbl_serviceprovidertype.objects.all()
-
-    # GET MESSAGE FROM URL
     msg = request.GET.get("msg")
+    msg_type = request.GET.get("msg_type", "success")  # default success
 
     if request.method == "POST":
-        service = request.POST.get("txt_service")
+        service = request.POST.get("txt_service").strip()
         servicetype = tbl_serviceprovidertype.objects.get(id=request.POST.get("sel_service"))
         edit_id = request.POST.get("txt_id")
 
-        # ✅ UPDATE
+        # UPDATE
         if edit_id:
             obj = tbl_services.objects.get(id=edit_id)
             obj.service_name = service
             obj.servicetype = servicetype
             obj.save()
+            return redirect(f"{reverse('Admin:Service')}?msg=Updated successfully&msg_type=success")
 
-            return redirect("/Admin/Service?msg=Updated successfully")
-
-        # ✅ INSERT
+        # INSERT
         else:
+            # Duplicate check
+            if tbl_services.objects.filter(service_name=service, servicetype=servicetype).exists():
+                return redirect(f"{reverse('Admin:Service')}?msg=Service already exists&msg_type=error")
+            
             tbl_services.objects.create(
                 service_name=service,
                 servicetype=servicetype
             )
-
-            return redirect("/Admin/Service?msg=Inserted successfully")
+            return redirect(f"{reverse('Admin:Service')}?msg=Inserted successfully&msg_type=success")
 
     data = tbl_services.objects.all()
 
     return render(request, "Admin/Service.html", {
         'data': data,
         'servicedata': servicedata,
-        'msg': msg
+        'msg': msg,
+        'msg_type': msg_type
     })
 
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def editservice(request, eid):
-    editdata = tbl_services.objects.get(id=eid)
-    data = tbl_services.objects.all()
     servicedata = tbl_serviceprovidertype.objects.all()
+    editdata = tbl_services.objects.get(id=eid)
+    
+    if request.method == "POST":
+        servicetype = tbl_serviceprovidertype.objects.get(id=request.POST.get("sel_service"))
+        service_name = request.POST.get("txt_service").strip()
+        
+        editdata.service_name = service_name
+        editdata.servicetype = servicetype
+        editdata.save()
+        
+        return redirect("Admin:Service")  # redirects to service list after update
+    else:
+        return render(request, "Admin/Service.html", {
+            'editdata': editdata,
+            'servicedata': servicedata,
+            'data': tbl_services.objects.all()
+        })
 
-    return render(request, "Admin/Service.html", {
-        'editdata': editdata,
-        'data': data,
-        'servicedata': servicedata
-    })
 
-
-def delservicetype(request, stid):
-    tbl_services.objects.get(id=stid).delete()
-    return redirect("/Admin/Service?msg=Deleted successfully")
-
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+def delservice(request, sid):
+    tbl_services.objects.get(id=sid).delete()
+    return redirect(f"{reverse('Admin:Service')}?msg=Deleted successfully&msg_type=success")
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def Complaintview(request):
     viewcomplaintdata = tbl_complaint.objects.filter(complaint_status=0,serviceprovider__isnull=False)

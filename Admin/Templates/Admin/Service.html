@@ -2,9 +2,7 @@
 {% load static %}
 
 {% block content %}
-
 <div class="container-fluid py-4">
-
   <div class="row">
 
     <!-- ===== FORM ===== -->
@@ -17,29 +15,20 @@
         </div>
 
         <div class="card-body py-2">
-
-          <!-- ✅ MESSAGE -->
-          {% if msg %}
-          <div class="alert alert-success text-center">
-            {{ msg }}
-          </div>
-          {% endif %}
-
           <form method="post">
             {% csrf_token %}
-
-            <!-- hidden id -->
-            <input type="hidden" name="txt_id" value="{{ editdata.id|default:'' }}">
+            {% if editdata %}
+              <input type="hidden" name="txt_id" value="{{ editdata.id }}">
+            {% endif %}
 
             <div class="form-group mb-2">
               <label class="small fw-bold">Service Provider Type</label>
               <select name="sel_service" class="form-select form-select-sm border-info" required>
                 <option value="">Select Service Provider</option>
                 {% for i in servicedata %}
-                <option value="{{ i.id }}"
-                  {% if editdata and i.id == editdata.servicetype.id %}selected{% endif %}>
-                  {{ i.serviceprovidertype_name }}
-                </option>
+                  <option value="{{ i.id }}" {% if editdata and i.id == editdata.servicetype.id %}selected{% endif %}>
+                    {{ i.serviceprovidertype_name }}
+                  </option>
                 {% endfor %}
               </select>
             </div>
@@ -47,21 +36,16 @@
             <div class="form-group mb-2">
               <label class="small fw-bold">Service Name</label>
               <input type="text" name="txt_service"
-                     value="{{ editdata.service_name|default:'' }}"
                      class="form-control form-control-sm border-info"
-                     placeholder="Enter Service Name" required>
+                     placeholder="Enter Service Name"
+                     required
+                     value="{% if editdata %}{{ editdata.service_name }}{% endif %}">
             </div>
 
             <div class="text-center mt-2">
-              <button type="submit" class="btn btn-success btn-sm px-4">
+              <button type="submit" class="btn btn-success btn-sm px-3">
                 {% if editdata %} Update {% else %} Submit {% endif %}
               </button>
-
-              {% if editdata %}
-              <a href="{% url 'Admin:Service' %}" class="btn btn-secondary btn-sm">
-                Cancel
-              </a>
-              {% endif %}
             </div>
 
           </form>
@@ -77,65 +61,73 @@
         </div>
 
         <div class="card-body py-2">
-
-          <!-- ✅ MESSAGE -->
-          {% if msg %}
-          <div class="alert alert-success text-center">
-            {{ msg }}
-          </div>
-          {% endif %}
-
           <div class="table-responsive" style="max-height:500px; overflow-y:auto;">
-            <table class="table table-sm table-bordered table-hover align-middle mb-0">
-              <thead class="table-primary">
+            <table class="table table-sm table-bordered align-middle mb-0">
+              <thead class="table-dark small">
                 <tr>
-                  <th>SNO</th>
+                  <th>#</th>
                   <th>Service Type</th>
                   <th>Service Name</th>
                   <th class="text-center">Action</th>
                 </tr>
               </thead>
 
-              <tbody>
+              <tbody class="small">
                 {% for i in data %}
                 <tr>
                   <td>{{ forloop.counter }}</td>
                   <td>{{ i.servicetype.serviceprovidertype_name }}</td>
                   <td>{{ i.service_name }}</td>
                   <td class="text-center">
-
-                    <!-- EDIT -->
-                    <a href="{% url 'Admin:editservice' i.id %}" 
-                       class="btn btn-warning btn-sm">
-                      Edit
-                    </a>
-
-                    <!-- DELETE -->
-                    <a href="{% url 'Admin:delservicetype' i.id %}"
-                       onclick="return confirm('Are you sure you want to delete this service?')"
-                       class="btn btn-danger btn-sm">
-                      Delete
-                    </a>
-
+                    <a href="{% url 'Admin:editservice' i.id %}" class="btn btn-warning btn-sm">Edit</a>
+                    <button onclick="deleteService({{ i.id }})" class="btn btn-danger btn-sm">Delete</button>
                   </td>
                 </tr>
                 {% empty %}
                 <tr>
-                  <td colspan="4" class="text-center text-muted">
-                    No Services Found
-                  </td>
+                  <td colspan="4" class="text-center text-muted">No Services Found</td>
                 </tr>
                 {% endfor %}
               </tbody>
-
             </table>
           </div>
-
         </div>
       </div>
     </div>
 
   </div>
 </div>
+
+<!-- SWEETALERT -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+{% if msg %}
+<script>
+Swal.fire({
+    icon: '{{ msg_type }}',
+    title: '{% if msg_type == "success" %}Success!{% else %}Error!{% endif %}',
+    text: '{{ msg }}',
+    confirmButtonText: 'OK'
+});
+</script>
+{% endif %}
+
+<script>
+function deleteService(id) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "This service will be deleted!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = "/Admin/delservice/" + id + "/";
+        }
+    })
+}
+</script>
 
 {% endblock content %}

@@ -41,8 +41,11 @@ urlpatterns = [
  path('Serviceproviderlist/',views.Serviceproviderlist,name="Serviceproviderlist"),
  path('acceptserviceprovider/<int:sid>',views.acceptserviceprovider,name="acceptserviceprovider"),
  path('rejectserviceprovider/<int:sid>',views.rejectserviceprovider,name="rejectserviceprovider"),
- path('Service/',views.Service,name="Service"),
- path('editservice/<int:eid>/', views.editservice, name="editservice"),
+ 
+    path("Service/", views.Service, name="Service"),
+    path("editservice/<int:eid>/", views.editservice, name="editservice"),
+    path("delservice/<int:sid>/", views.delservice, name="delservice"),
+
  path('delservicetype/<int:stid>/', views.delservicetype, name="delservicetype"),
  path('Logout/', views.Logout, name="Logout"),
  path('Complaintview/',views.Complaintview,name="Complaintview"),
