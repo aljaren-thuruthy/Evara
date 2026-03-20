@@ -126,9 +126,10 @@ def Place(request):
     placedata = tbl_place.objects.all()
 
     if request.method == "POST":
-        district_id = request.POST.get("sel_district")
+        district_id = int(request.POST.get("sel_district"))  # ✅ convert to int
         place = request.POST.get("txt_place")
 
+        # ✅ duplicate check
         if tbl_place.objects.filter(place_name=place, district_id=district_id).exists():
             return render(request, "Admin/Place.html", {
                 'msg': "Place already exists!",

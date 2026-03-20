@@ -11,19 +11,28 @@
     <div class="col-md-4 col-sm-6 mb-3">
       <div class="card shadow-sm border-info">
         <div class="card-header py-2 text-center text-white" style="background-color:#17a2b8;">
-          <h6 class="mb-0">Add Place</h6>
+          <h6 class="mb-0">
+            {% if editdata %} Edit Place {% else %} Add Place {% endif %}
+          </h6>
         </div>
 
         <div class="card-body py-2">
           <form method="post">
             {% csrf_token %}
+            {% if editdata %}
+              <!-- Hidden input to hold place ID for editing -->
+              <input type="hidden" name="txt_id" value="{{ editdata.id }}">
+            {% endif %}
 
             <div class="form-group mb-2">
               <label class="small fw-bold">District</label>
               <select name="sel_district" class="form-control form-control-sm border-info" required>
                 <option value="">Select District</option>
                 {% for i in districtdata %}
-                <option value="{{ i.id }}">{{ i.district_name }}</option>
+                  <option value="{{ i.id }}" 
+                    {% if editdata and editdata.district.id == i.id %} selected {% endif %}>
+                    {{ i.district_name }}
+                  </option>
                 {% endfor %}
               </select>
             </div>
@@ -32,12 +41,14 @@
               <label class="small fw-bold">Place Name</label>
               <input type="text" name="txt_place"
                      class="form-control form-control-sm border-info"
-                     placeholder="Enter place name" required>
+                     placeholder="Enter place name"
+                     required
+                     value="{% if editdata %}{{ editdata.place_name }}{% endif %}">
             </div>
 
             <div class="text-center mt-2">
               <button type="submit" class="btn btn-success btn-sm px-3">
-                Submit
+                {% if editdata %} Update {% else %} Submit {% endif %}
               </button>
             </div>
 
